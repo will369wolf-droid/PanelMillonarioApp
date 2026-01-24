@@ -13,11 +13,11 @@ COLOR_ACENTO = "#00d26a"  # Verde Dinero
 COLOR_FONDO = "#121212"
 
 # --- TUS ARCHIVOS ---
-CARPETA_ASSETS = "assets"
-ARCHIVO_FONDO = "Fondo.mp4"        
-ARCHIVO_MOTIVACION = "motivacion.gif" 
+# Nota: Se usa la ruta relativa 'assets/' para asegurar compatibilidad
+ARCHIVO_FONDO = "assets/Fondo.mp4"        
+ARCHIVO_MOTIVACION = "assets/motivacion.gif" 
 
-# --- FRASES COMPLETAS (30 frases originales) ---
+# --- FRASES COMPLETAS ---
 FRASES_MILLONARIAS = [
     "El dolor del sacrificio es temporal, la gloria es eterna.",
     "No te detengas cuando estés cansado, detente cuando termines.",
@@ -51,16 +51,16 @@ FRASES_MILLONARIAS = [
     "Gana la mañana, gana el día."
 ]
 
-# Configuración Hábito
+# Configuración Hábito (Iconos actualizados para Flet Moderno)
 HABITOS_CONFIG = {
-    "⏰ Despertar 5:00–6:00 am": [ft.icons.ACCESS_ALARM, ft.colors.ORANGE],
-    "💧 Tomar agua + aseo": [ft.icons.OPACITY, ft.colors.BLUE],
+    "⏰ Despertar 5:00–6:00 am": [ft.icons.ALARM, ft.colors.ORANGE],
+    "💧 Tomar agua + aseo": [ft.icons.WATER_DROP, ft.colors.BLUE],
     "🎯 Definir objetivo principal": [ft.icons.FLAG, ft.colors.RED_ACCENT],
     "🔍 Investigar productos": [ft.icons.SEARCH, ft.colors.PURPLE_ACCENT],
     "📚 Aprender algo nuevo": [ft.icons.SCHOOL, ft.colors.YELLOW_ACCENT],
     "⚡ Aplicar lo aprendido": [ft.icons.FLASH_ON, ft.colors.AMBER],
     "🏗️ Construir negocio": [ft.icons.BUSINESS, ft.colors.CYAN],
-    "📢 Lanzar anuncios": [ft.icons.ANNOUNCEMENT, ft.colors.PINK_ACCENT],
+    "📢 Lanzar anuncios": [ft.icons.CAMPAIGN, ft.colors.PINK_ACCENT],
     "🏃 Ejercicio físico": [ft.icons.FITNESS_CENTER, ft.colors.GREEN_ACCENT],
     "💼 Jornada de trabajo": [ft.icons.WORK, ft.colors.BLUE_GREY],
     "📊 Revisar números": [ft.icons.INSERT_CHART, ft.colors.TEAL_ACCENT],
@@ -154,7 +154,7 @@ def main(page: ft.Page):
         if e.control.value:
             config = HABITOS_CONFIG[nombre_habito]
             threading.Thread(target=lanzar_animacion, args=(config[0], config[1]), daemon=True).start()
-            snack_bar.content.value = "✅ ¡Hecho!"
+            snack_bar.content.value = "✅ ¡Disciplina es Libertad!"
             snack_bar.open = True
             page.update()
 
@@ -332,4 +332,5 @@ def main(page: ft.Page):
     
     actualizar_rutina()
 
-ft.app(target=main, assets_dir="assets", view=ft.FLET_APP, port=8550, host="0.0.0.0")
+# Ejecución de la App
+ft.app(target=main, assets_dir="assets")
