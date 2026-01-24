@@ -50,21 +50,21 @@ FRASES_MILLONARIAS = [
     "Gana la mañana, gana el día."
 ]
 
-# Configuración Hábito (Nombres de texto para evitar AttributeError)
+# Configuración Hábito (Corregido: 'Colors' con mayúscula para evitar AttributeError)
 HABITOS_CONFIG = {
-    "⏰ Despertar 5:00–6:00 am": ["alarm", ft.colors.ORANGE],
-    "💧 Tomar agua + aseo": ["water_drop", ft.colors.BLUE],
-    "🎯 Definir objetivo principal": ["flag", ft.colors.RED_ACCENT],
-    "🔍 Investigar productos": ["search", ft.colors.PURPLE_ACCENT],
-    "📚 Aprender algo nuevo": ["school", ft.colors.YELLOW_ACCENT],
-    "⚡ Aplicar lo aprendido": ["flash_on", ft.colors.AMBER],
-    "🏗️ Construir negocio": ["business", ft.colors.CYAN],
-    "📢 Lanzar anuncios": ["campaign", ft.colors.PINK_ACCENT],
-    "🏃 Ejercicio físico": ["fitness_center", ft.colors.GREEN_ACCENT],
-    "💼 Jornada de trabajo": ["work", ft.colors.BLUE_GREY],
-    "📊 Revisar números": ["insert_chart", ft.colors.TEAL_ACCENT],
-    "🧠 Reflexión diaria": ["lightbulb", ft.colors.YELLOW],
-    "😴 Dormir temprano": ["hotel", ft.colors.INDIGO_ACCENT],
+    "⏰ Despertar 5:00–6:00 am": ["alarm", ft.Colors.ORANGE],
+    "💧 Tomar agua + aseo": ["water_drop", ft.Colors.BLUE],
+    "🎯 Definir objetivo principal": ["flag", ft.Colors.RED_ACCENT],
+    "🔍 Investigar productos": ["search", ft.Colors.PURPLE_ACCENT],
+    "📚 Aprender algo nuevo": ["school", ft.Colors.YELLOW_ACCENT],
+    "⚡ Aplicar lo aprendido": ["flash_on", ft.Colors.AMBER],
+    "🏗️ Construir negocio": ["business", ft.Colors.CYAN],
+    "📢 Lanzar anuncios": ["campaign", ft.Colors.PINK_ACCENT],
+    "🏃 Ejercicio físico": ["fitness_center", ft.Colors.GREEN_ACCENT],
+    "💼 Jornada de trabajo": ["work", ft.Colors.BLUE_GREY],
+    "📊 Revisar números": ["insert_chart", ft.Colors.TEAL_ACCENT],
+    "🧠 Reflexión diaria": ["lightbulb", ft.Colors.YELLOW],
+    "😴 Dormir temprano": ["hotel", ft.Colors.INDIGO_ACCENT],
 }
 SOLO_NOMBRES = list(HABITOS_CONFIG.keys())
 
@@ -90,7 +90,7 @@ def main(page: ft.Page):
     )
 
     # --- ANIMACIÓN DE RECOMPENSA ---
-    icono_recompensa = ft.Icon(name="check", size=150, color=ft.colors.WHITE)
+    icono_recompensa = ft.Icon(name="check", size=150, color=ft.Colors.WHITE)
     contenedor_animacion = ft.Container(
         content=icono_recompensa,
         alignment=ft.alignment.center,
@@ -155,17 +155,16 @@ def main(page: ft.Page):
 
     # PESTAÑA 1: RUTINA
     progreso_texto = ft.Text("0%", size=45, weight="bold", color=COLOR_ACENTO)
-    progreso_ring = ft.ProgressRing(width=180, height=180, stroke_width=15, bgcolor=ft.colors.with_opacity(0.3, "black"), color=COLOR_ACENTO)
+    progreso_ring = ft.ProgressRing(width=180, height=180, stroke_width=15, bgcolor=ft.Colors.with_opacity(0.3, "black"), color=COLOR_ACENTO)
     lista_controles = []
     
     for nombre in SOLO_NOMBRES:
         datos = HABITOS_CONFIG[nombre]
         chk = ft.Switch(value=db[hoy_str].get(nombre, False), on_change=lambda e, x=nombre: cambiar_habito(e, x), active_color=datos[1])
         tarjeta = ft.Container(
-            # CORRECCIÓN: Usamos name=datos[0] para leer el texto del icono
             content=ft.Row([ft.Icon(name=datos[0], color=datos[1], size=24), ft.Container(width=10), ft.Text(nombre, size=13, color="white", weight="w500", expand=True), chk]),
-            bgcolor=ft.colors.with_opacity(0.6, "black"),
-            padding=15, border_radius=12, border=ft.border.all(1, ft.colors.with_opacity(0.3, datos[1])),
+            bgcolor=ft.Colors.with_opacity(0.6, "black"),
+            padding=15, border_radius=12, border=ft.border.all(1, ft.Colors.with_opacity(0.3, datos[1])),
             blur=ft.Blur(5, 5, ft.BlurTileMode.MIRROR)
         )
         lista_controles.append(tarjeta)
@@ -189,7 +188,7 @@ def main(page: ft.Page):
 
     # PESTAÑA 2: CALENDARIO
     stats_texto_mes = ft.Text("Mes", size=20, weight="bold", color="white")
-    stats_anillo_mes = ft.ProgressRing(width=100, height=100, stroke_width=8, color=ft.colors.PURPLE, bgcolor=ft.colors.with_opacity(0.3, "black"))
+    stats_anillo_mes = ft.ProgressRing(width=100, height=100, stroke_width=8, color=ft.Colors.PURPLE, bgcolor=ft.Colors.with_opacity(0.3, "black"))
     stats_porcentaje_mes = ft.Text("0%", size=18, weight="bold")
     grid_calendario = ft.Column(spacing=2, horizontal_alignment="center")
     contenedor_detalles = ft.Container(padding=20, alignment=ft.alignment.center)
@@ -214,13 +213,13 @@ def main(page: ft.Page):
         fila = []
         for dia in range(1, num_dias + 1):
             f_key = f"{hoy.year}-{hoy.month:02d}-{dia:02d}"
-            color = ft.colors.with_opacity(0.3, "white")
+            color = ft.Colors.with_opacity(0.3, "white")
             if f_key in db:
                 h = sum(1 for v in db[f_key].values() if v)
                 r = h / len(SOLO_NOMBRES)
-                if r == 1.0: color = ft.colors.GREEN_ACCENT_700
-                elif r >= 0.5: color = ft.colors.AMBER_600
-                elif r > 0: color = ft.colors.RED_900
+                if r == 1.0: color = ft.Colors.GREEN_ACCENT_700
+                elif r >= 0.5: color = ft.Colors.AMBER_600
+                elif r > 0: color = ft.Colors.RED_900
             
             borde = ft.border.all(2, COLOR_ACENTO) if dia == hoy.day else None
             btn = ft.Container(
@@ -251,9 +250,9 @@ def main(page: ft.Page):
                 for h in fallos: col.append(ft.Text(f" • {h}", size=12, color="white70"))
 
         contenedor_detalles.content = ft.Container(
-            bgcolor=ft.colors.with_opacity(0.8, "black"), padding=20, border_radius=15,
+            bgcolor=ft.Colors.with_opacity(0.8, "black"), padding=20, border_radius=15,
             content=ft.Column(col, horizontal_alignment="center"),
-            border=ft.border.all(1, ft.colors.with_opacity(0.1, "white"))
+            border=ft.border.all(1, ft.Colors.with_opacity(0.1, "white"))
         )
         page.update()
 
@@ -275,8 +274,8 @@ def main(page: ft.Page):
             ft.Container(height=10),
             ft.Text("MENTOR VIRTUAL", size=12, color=COLOR_ACENTO, weight="bold")
         ], horizontal_alignment="center"),
-        padding=25, bgcolor=ft.colors.with_opacity(0.6, "black"), border_radius=15,
-        border=ft.border.all(1, ft.colors.with_opacity(0.5, COLOR_ACENTO)),
+        padding=25, bgcolor=ft.Colors.with_opacity(0.6, "black"), border_radius=15,
+        border=ft.border.all(1, ft.Colors.with_opacity(0.5, COLOR_ACENTO)),
         blur=ft.Blur(10, 10, ft.BlurTileMode.MIRROR)
     )
 
@@ -287,7 +286,7 @@ def main(page: ft.Page):
     globo = ft.Container(
         content=ft.Image(src=ARCHIVO_MOTIVACION, width=220, height=220, fit=ft.ImageFit.CONTAIN, gapless_playback=True),
         on_click=cambiar_frase, border_radius=110, padding=10,
-        shadow=ft.BoxShadow(blur_radius=40, color=ft.colors.with_opacity(0.4, ft.colors.BLUE))
+        shadow=ft.BoxShadow(blur_radius=40, color=ft.Colors.with_opacity(0.4, ft.Colors.BLUE))
     )
 
     vista_frases = ft.Container(
@@ -295,7 +294,7 @@ def main(page: ft.Page):
         content=ft.Column([
             ft.Text("CONSEJO PROFESIONAL", size=14, color="white70", weight="bold"),
             ft.Container(height=20), globo, ft.Container(height=10),
-            ft.Text("NUEVA DOSIS DE REALIDAD", size=12, color=ft.colors.BLUE_200, italic=True),
+            ft.Text("NUEVA DOSIS DE REALIDAD", size=12, color=ft.Colors.BLUE_200, italic=True),
             ft.Container(height=40), tarjeta
         ], horizontal_alignment="center", alignment=ft.MainAxisAlignment.CENTER)
     )
@@ -310,7 +309,7 @@ def main(page: ft.Page):
         page.update()
 
     nav = ft.NavigationBar(
-        bgcolor="black", indicator_color=ft.colors.with_opacity(0.2, COLOR_ACENTO), selected_index=0, on_change=cambiar_tab,
+        bgcolor="black", indicator_color=ft.Colors.with_opacity(0.2, COLOR_ACENTO), selected_index=0, on_change=cambiar_tab,
         destinations=[
             ft.NavigationDestination(icon="check_circle", label="Mi Día"),
             ft.NavigationDestination(icon="calendar_month", label="Historial"),
