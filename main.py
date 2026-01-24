@@ -10,7 +10,7 @@ import random
 # --- CONFIGURACIÓN ---
 DB_FILE = "datos_rutina_v2.json"
 COLOR_ACENTO = "#00d26a"  
-COLOR_FONDO = "#121212"
+COLOR_FONDO = "#121212" # Fondo oscuro de seguridad
 ARCHIVO_FONDO = "assets/Fondo.mp4"        
 ARCHIVO_MOTIVACION = "assets/motivacion.gif" 
 
@@ -66,29 +66,30 @@ HABITOS_CONFIG = {
 SOLO_NOMBRES = list(HABITOS_CONFIG.keys())
 
 def main(page: ft.Page):
-    page.title = "Panel Millonario V36"
-    page.bgcolor = COLOR_FONDO
+    page.title = "Panel Imperio V37"
+    page.bgcolor = COLOR_FONDO # Aseguramos color de arranque
     page.theme_mode = ft.ThemeMode.DARK
     page.padding = 0
 
-    # Fondo de video invisible para no bloquear el arranque
+    # 1. El video empieza totalmente invisible
     fondo_video = ft.Video(
         playlist=[ft.VideoMedia(ARCHIVO_FONDO)],
         playlist_mode=ft.PlaylistMode.LOOP,
         volume=0, muted=True, visible=False, opacity=0
     )
 
-    # Función "Escudo" de carga segura
-    def iniciar_video_seguro():
+    # 2. Función de rescate: Carga el video después de mostrar los botones
+    def activar_video_asincrono():
         try:
-            time.sleep(5) # 5 segundos de cortesía para la interfaz
+            time.sleep(5) # 5 segundos para que veas tus hábitos primero
             fondo_video.visible = True
             fondo_video.play()
             for i in range(1, 4):
                 fondo_video.opacity = i * 0.1
                 page.update()
                 time.sleep(0.5)
-        except: pass # Si el video falla, la App sigue viva con fondo negro
+        except:
+            pass # Si el video falla, la App sigue funcionando perfecta en negro
 
     # --- LÓGICA DE DATOS ---
     def cargar_datos():
@@ -149,12 +150,13 @@ def main(page: ft.Page):
         ]
     )
 
+    # 3. Ensamblaje: Primero se dibuja el contenido sobre el fondo negro
     page.add(ft.Stack([
         fondo_video,
         ft.Column([layout, nav], expand=True)
     ], expand=True))
 
-    threading.Thread(target=iniciar_video_seguro, daemon=True).start()
+    threading.Thread(target=activar_video_asincrono, daemon=True).start()
     actualizar_progreso()
 
 ft.app(target=main, assets_dir="assets")
