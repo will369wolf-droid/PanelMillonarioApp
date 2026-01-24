@@ -14,7 +14,7 @@ COLOR_FONDO = "#121212"
 ARCHIVO_FONDO = "assets/Fondo.mp4"        
 ARCHIVO_MOTIVACION = "assets/motivacion.gif" 
 
-# --- TUS 30 FRASES (Sin modificaciones) ---
+# --- TUS 30 FRASES ORIGINALES ---
 FRASES_MILLONARIAS = [
     "El dolor del sacrificio es temporal, la gloria es eterna.",
     "No te detengas cuando estés cansado, detente cuando termines.",
@@ -63,33 +63,24 @@ HABITOS_CONFIG = {
     "🧠 Reflexión diaria": ["lightbulb", ft.Colors.YELLOW],
     "😴 Dormir temprano": ["hotel", ft.Colors.INDIGO_ACCENT],
 }
-SOLO_NOMBRES = list(HABITOS_CONFIG.keys())
 
 def main(page: ft.Page):
-    page.title = "Panel Millonario V34"
+    page.title = "Panel Millonario"
+    page.bgcolor = COLOR_FONDO
     page.theme_mode = ft.ThemeMode.DARK
     page.padding = 0
-    page.bgcolor = COLOR_FONDO
 
-    # --- VIDEO (Configurado para no bloquear la App) ---
-    fondo_app = ft.Video(
+    # --- FONDO DE VIDEO (Inicialmente oculto para evitar pantalla negra) ---
+    fondo_video = ft.Video(
         playlist=[ft.VideoMedia(ARCHIVO_FONDO)],
         playlist_mode=ft.PlaylistMode.LOOP,
-        fill_color="black",
-        aspect_ratio=9/16,
         volume=0,
-        autoplay=False, # No arranca solo para no congelar la pantalla
         muted=True,
-        opacity=0.3,
+        visible=False,
+        opacity=0
     )
 
-    # --- LÓGICA DE ARRANQUE SEGURO ---
-    def activar_video():
-        time.sleep(2) # Espera 2 segundos a que la App se cargue bien
-        fondo_app.autoplay = True
-        page.update()
-
-    # --- INTERFAZ ---
+    # --- INTERFAZ DE USUARIO ---
     progreso_texto = ft.Text("0%", size=45, weight="bold", color=COLOR_ACENTO)
     progreso_ring = ft.ProgressRing(width=180, height=180, stroke_width=15, color=COLOR_ACENTO)
     
@@ -122,14 +113,29 @@ def main(page: ft.Page):
     )
 
     # --- ENSAMBLAJE ---
+    # Usamos un fondo negro sólido primero para garantizar que la App se vea
     page.add(
         ft.Stack([
-            fondo_app, 
+            fondo_video,
             ft.Column([layout, nav], expand=True),
         ], expand=True)
     )
 
-    # Lanzar el video en un hilo separado
-    threading.Thread(target=activar_video, daemon=True).start()
+    # --- CARGA SEGURA DEL VIDEO EN SEGUNDO PLANO ---
+    def intentar_video():
+        try:
+            time.sleep(4) # Damos mucho tiempo para que la App cargue todo lo demás
+            fondo_video.visible = True
+            fondo_video.play()
+            # Subimos la opacidad poco a poco para que no sea un choque para el sistema
+            for i in range(1, 4):
+                fondo_video.opacity = i * 0.1
+                page.update()
+                time.sleep(0.5)
+        except:
+            # Si el video falla, la App seguirá funcionando con fondo negro
+            pass
+
+    threading.Thread(target=intentar_video, daemon=True).start()
 
 ft.app(target=main, assets_dir="assets")
