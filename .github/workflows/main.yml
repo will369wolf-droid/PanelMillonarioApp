@@ -13,6 +13,12 @@ jobs:
     - name: Chequear código
       uses: actions/checkout@v3
 
+    - name: Configurar Java 17
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+
     - name: Instalar Python
       uses: actions/setup-python@v4
       with:
