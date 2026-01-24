@@ -26,7 +26,6 @@ jobs:
     - name: Instalar dependencias
       run: |
         pip install -r requirements.txt
-        pip install flet
 
     - name: Construir APK
       run: |
