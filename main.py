@@ -13,7 +13,6 @@ COLOR_ACENTO = "#00d26a"  # Verde Dinero
 COLOR_FONDO = "#121212"
 
 # --- TUS ARCHIVOS ---
-# Nota: Se usa la ruta relativa 'assets/' para asegurar compatibilidad
 ARCHIVO_FONDO = "assets/Fondo.mp4"        
 ARCHIVO_MOTIVACION = "assets/motivacion.gif" 
 
@@ -51,21 +50,21 @@ FRASES_MILLONARIAS = [
     "Gana la mañana, gana el día."
 ]
 
-# Configuración Hábito (Iconos actualizados para Flet Moderno)
+# Configuración Hábito (Nombres de texto para evitar AttributeError)
 HABITOS_CONFIG = {
-    "⏰ Despertar 5:00–6:00 am": [ft.icons.ALARM, ft.colors.ORANGE],
-    "💧 Tomar agua + aseo": [ft.icons.WATER_DROP, ft.colors.BLUE],
-    "🎯 Definir objetivo principal": [ft.icons.FLAG, ft.colors.RED_ACCENT],
-    "🔍 Investigar productos": [ft.icons.SEARCH, ft.colors.PURPLE_ACCENT],
-    "📚 Aprender algo nuevo": [ft.icons.SCHOOL, ft.colors.YELLOW_ACCENT],
-    "⚡ Aplicar lo aprendido": [ft.icons.FLASH_ON, ft.colors.AMBER],
-    "🏗️ Construir negocio": [ft.icons.BUSINESS, ft.colors.CYAN],
-    "📢 Lanzar anuncios": [ft.icons.CAMPAIGN, ft.colors.PINK_ACCENT],
-    "🏃 Ejercicio físico": [ft.icons.FITNESS_CENTER, ft.colors.GREEN_ACCENT],
-    "💼 Jornada de trabajo": [ft.icons.WORK, ft.colors.BLUE_GREY],
-    "📊 Revisar números": [ft.icons.INSERT_CHART, ft.colors.TEAL_ACCENT],
-    "🧠 Reflexión diaria": [ft.icons.LIGHTBULB, ft.colors.YELLOW],
-    "😴 Dormir temprano": [ft.icons.HOTEL, ft.colors.INDIGO_ACCENT],
+    "⏰ Despertar 5:00–6:00 am": ["alarm", ft.colors.ORANGE],
+    "💧 Tomar agua + aseo": ["water_drop", ft.colors.BLUE],
+    "🎯 Definir objetivo principal": ["flag", ft.colors.RED_ACCENT],
+    "🔍 Investigar productos": ["search", ft.colors.PURPLE_ACCENT],
+    "📚 Aprender algo nuevo": ["school", ft.colors.YELLOW_ACCENT],
+    "⚡ Aplicar lo aprendido": ["flash_on", ft.colors.AMBER],
+    "🏗️ Construir negocio": ["business", ft.colors.CYAN],
+    "📢 Lanzar anuncios": ["campaign", ft.colors.PINK_ACCENT],
+    "🏃 Ejercicio físico": ["fitness_center", ft.colors.GREEN_ACCENT],
+    "💼 Jornada de trabajo": ["work", ft.colors.BLUE_GREY],
+    "📊 Revisar números": ["insert_chart", ft.colors.TEAL_ACCENT],
+    "🧠 Reflexión diaria": ["lightbulb", ft.colors.YELLOW],
+    "😴 Dormir temprano": ["hotel", ft.colors.INDIGO_ACCENT],
 }
 SOLO_NOMBRES = list(HABITOS_CONFIG.keys())
 
@@ -78,13 +77,9 @@ def main(page: ft.Page):
     page.bgcolor = COLOR_FONDO
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
-    # --- CARGA DE RECURSOS ---
-    src_fondo = ARCHIVO_FONDO
-    src_motivacion = ARCHIVO_MOTIVACION
-
-    # Fondo de la App (Configurado para Video MP4)
+    # --- FONDO DE VIDEO ---
     fondo_app = ft.Video(
-        playlist=[ft.VideoMedia(src_fondo)],
+        playlist=[ft.VideoMedia(ARCHIVO_FONDO)],
         playlist_mode=ft.PlaylistMode.LOOP,
         fill_color="black",
         aspect_ratio=9/16,
@@ -94,8 +89,8 @@ def main(page: ft.Page):
         opacity=0.3
     )
 
-    # --- ANIMACIÓN DE CHECK ---
-    icono_recompensa = ft.Icon(name=ft.icons.CHECK, size=150, color=ft.colors.WHITE)
+    # --- ANIMACIÓN DE RECOMPENSA ---
+    icono_recompensa = ft.Icon(name="check", size=150, color=ft.colors.WHITE)
     contenedor_animacion = ft.Container(
         content=icono_recompensa,
         alignment=ft.alignment.center,
@@ -167,7 +162,8 @@ def main(page: ft.Page):
         datos = HABITOS_CONFIG[nombre]
         chk = ft.Switch(value=db[hoy_str].get(nombre, False), on_change=lambda e, x=nombre: cambiar_habito(e, x), active_color=datos[1])
         tarjeta = ft.Container(
-            content=ft.Row([ft.Icon(datos[0], color=datos[1], size=24), ft.Container(width=10), ft.Text(nombre, size=13, color="white", weight="w500", expand=True), chk]),
+            # CORRECCIÓN: Usamos name=datos[0] para leer el texto del icono
+            content=ft.Row([ft.Icon(name=datos[0], color=datos[1], size=24), ft.Container(width=10), ft.Text(nombre, size=13, color="white", weight="w500", expand=True), chk]),
             bgcolor=ft.colors.with_opacity(0.6, "black"),
             padding=15, border_radius=12, border=ft.border.all(1, ft.colors.with_opacity(0.3, datos[1])),
             blur=ft.Blur(5, 5, ft.BlurTileMode.MIRROR)
@@ -204,7 +200,6 @@ def main(page: ft.Page):
         num_dias = calendar.monthrange(hoy.year, hoy.month)[1]
         stats_texto_mes.value = f"{calendar.month_name[hoy.month]} {hoy.year}"
         
-        # Logica Porcentaje
         dias_pasados = hoy.day
         habitos_posibles = dias_pasados * len(SOLO_NOMBRES)
         hechos_totales = 0
@@ -275,7 +270,7 @@ def main(page: ft.Page):
     txt_frase = ft.Text("Toca la imagen.", size=18, text_align="center", color="white", font_family="Consolas")
     tarjeta = ft.Container(
         content=ft.Column([
-            ft.Icon(ft.icons.FORMAT_QUOTE, color=COLOR_ACENTO, size=30),
+            ft.Icon(name="format_quote", color=COLOR_ACENTO, size=30),
             txt_frase,
             ft.Container(height=10),
             ft.Text("MENTOR VIRTUAL", size=12, color=COLOR_ACENTO, weight="bold")
@@ -290,7 +285,7 @@ def main(page: ft.Page):
         page.update()
 
     globo = ft.Container(
-        content=ft.Image(src=src_motivacion, width=220, height=220, fit=ft.ImageFit.CONTAIN, gapless_playback=True),
+        content=ft.Image(src=ARCHIVO_MOTIVACION, width=220, height=220, fit=ft.ImageFit.CONTAIN, gapless_playback=True),
         on_click=cambiar_frase, border_radius=110, padding=10,
         shadow=ft.BoxShadow(blur_radius=40, color=ft.colors.with_opacity(0.4, ft.colors.BLUE))
     )
@@ -317,9 +312,9 @@ def main(page: ft.Page):
     nav = ft.NavigationBar(
         bgcolor="black", indicator_color=ft.colors.with_opacity(0.2, COLOR_ACENTO), selected_index=0, on_change=cambiar_tab,
         destinations=[
-            ft.NavigationDestination(icon=ft.icons.CHECK_CIRCLE, label="Mi Día"),
-            ft.NavigationDestination(icon=ft.icons.CALENDAR_MONTH, label="Historial"),
-            ft.NavigationDestination(icon=ft.icons.PSYCHOLOGY, label="Mentores")
+            ft.NavigationDestination(icon="check_circle", label="Mi Día"),
+            ft.NavigationDestination(icon="calendar_month", label="Historial"),
+            ft.NavigationDestination(icon="psychology", label="Mentores")
         ]
     )
 
@@ -332,5 +327,4 @@ def main(page: ft.Page):
     
     actualizar_rutina()
 
-# Ejecución de la App
 ft.app(target=main, assets_dir="assets")
