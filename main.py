@@ -1,30 +1,28 @@
 import flet as ft
-import random
-
-# --- TUS 30 FRASES ---
-FRASES = ["Gana la mañana, gana el día.", "La disciplina es libertad.", "Hazlo con miedo, pero hazlo."] # (Restauraremos las 30 luego)
 
 def main(page: ft.Page):
-    # Configuración ultra-simple
+    # Configuración de máxima compatibilidad
     page.bgcolor = "#121212"
     page.theme_mode = ft.ThemeMode.DARK
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-
-    # Interfaz básica de prueba de vida
-    page.add(
-        ft.Container(
-            content=ft.Column([
-                ft.Icon(name="stars", color="#00d26a", size=50),
-                ft.Text("PANEL IMPERIO: ACTIVO", size=20, weight="bold"),
-                ft.Text(random.choice(FRASES), italic=True, color="white70"),
-                ft.ElevatedButton("ENTRAR A MI RUTINA", on_click=lambda _: print("Click"))
-            ], horizontal_alignment="center"),
-            padding=40,
-            bgcolor="#1E1E1E",
-            border_radius=20
-        )
+    page.window_resizable = False
+    
+    # Contenido ultra-simple para asegurar el arranque
+    contenido = ft.Container(
+        content=ft.Column([
+            ft.Icon(name="verified_user", color="#00d26a", size=60),
+            ft.Text("SISTEMA IMPERIO ACTIVO", size=22, weight="bold"),
+            ft.Text("Si ves esto, tu celular es compatible.", color="white70"),
+            ft.Divider(height=40, color="white24"),
+            ft.ElevatedButton(
+                "DESBLOQUEAR RUTINA", 
+                on_click=lambda _: print("Acceso concedido")
+            )
+        ], horizontal_alignment="center"),
+        padding=50,
+        alignment=ft.alignment.center
     )
+
+    page.add(contenido)
     page.update()
 
 ft.app(target=main)
