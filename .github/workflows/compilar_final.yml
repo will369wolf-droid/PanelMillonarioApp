@@ -1,4 +1,4 @@
-name: Compilar Panel Millonario APK
+name: Compilar Panel Millonario APK Final
 
 on:
   push:
@@ -19,19 +19,21 @@ jobs:
         distribution: 'zulu'
         java-version: '17'
 
-    - name: Instalar Python 3.10
+    - name: Forzar Python 3.10
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
+        cache: 'pip'
 
     - name: Instalar Flutter
       uses: subosito/flutter-action@v2
       with:
         channel: 'stable'
 
-    - name: Instalar dependencias
+    - name: Instalar Dependencias Blindadas
       run: |
         python3 -m pip install --upgrade pip
+        python3 -m pip install wheel setuptools
         python3 -m pip install -r requirements.txt
 
     - name: Construir APK
