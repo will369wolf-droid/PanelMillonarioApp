@@ -19,10 +19,10 @@ jobs:
         distribution: 'zulu'
         java-version: '17'
 
-    - name: Instalar Python
+    - name: Instalar Python 3.10
       uses: actions/setup-python@v4
       with:
-        python-version: '3.11'
+        python-version: '3.10'
 
     - name: Instalar Flutter
       uses: subosito/flutter-action@v2
@@ -31,6 +31,7 @@ jobs:
 
     - name: Instalar dependencias
       run: |
+        pip install --upgrade pip
         pip install -r requirements.txt
 
     - name: Construir APK
