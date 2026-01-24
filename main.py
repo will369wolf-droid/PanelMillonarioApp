@@ -2,17 +2,15 @@ import flet as ft
 import datetime
 import json
 import os
-import threading
-import time
 import calendar
 import random
 
 # --- CONFIGURACIÓN ---
 DB_FILE = "datos_rutina_v2.json"
 COLOR_ACENTO = "#00d26a"  
-COLOR_FONDO = "#121212" # Fondo oscuro de seguridad
-ARCHIVO_FONDO = "assets/Fondo.mp4"        
-ARCHIVO_MOTIVACION = "assets/motivacion.gif" 
+COLOR_FONDO = "#121212"
+# Cambiamos el video por la imagen motivacional que ya tienes
+ARCHIVO_FONDO_IMG = "assets/motivacion.gif" 
 
 # --- TUS 30 FRASES ORIGINALES ---
 FRASES_MILLONARIAS = [
@@ -66,30 +64,18 @@ HABITOS_CONFIG = {
 SOLO_NOMBRES = list(HABITOS_CONFIG.keys())
 
 def main(page: ft.Page):
-    page.title = "Panel Imperio V37"
-    page.bgcolor = COLOR_FONDO # Aseguramos color de arranque
+    page.title = "Panel Imperio V38"
+    page.bgcolor = COLOR_FONDO
     page.theme_mode = ft.ThemeMode.DARK
     page.padding = 0
 
-    # 1. El video empieza totalmente invisible
-    fondo_video = ft.Video(
-        playlist=[ft.VideoMedia(ARCHIVO_FONDO)],
-        playlist_mode=ft.PlaylistMode.LOOP,
-        volume=0, muted=True, visible=False, opacity=0
+    # Fondo de Imagen (Infinitamente más estable que el video en Android)
+    img_fondo = ft.Image(
+        src=ARCHIVO_FONDO_IMG,
+        fit=ft.ImageFit.COVER,
+        opacity=0.2,
+        expand=True
     )
-
-    # 2. Función de rescate: Carga el video después de mostrar los botones
-    def activar_video_asincrono():
-        try:
-            time.sleep(5) # 5 segundos para que veas tus hábitos primero
-            fondo_video.visible = True
-            fondo_video.play()
-            for i in range(1, 4):
-                fondo_video.opacity = i * 0.1
-                page.update()
-                time.sleep(0.5)
-        except:
-            pass # Si el video falla, la App sigue funcionando perfecta en negro
 
     # --- LÓGICA DE DATOS ---
     def cargar_datos():
@@ -150,13 +136,11 @@ def main(page: ft.Page):
         ]
     )
 
-    # 3. Ensamblaje: Primero se dibuja el contenido sobre el fondo negro
     page.add(ft.Stack([
-        fondo_video,
+        img_fondo,
         ft.Column([layout, nav], expand=True)
     ], expand=True))
 
-    threading.Thread(target=activar_video_asincrono, daemon=True).start()
     actualizar_progreso()
 
 ft.app(target=main, assets_dir="assets")
