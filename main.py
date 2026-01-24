@@ -2,6 +2,7 @@ import flet as ft
 import datetime
 import json
 import os
+import random
 
 # --- CONFIGURACIÓN ---
 DB_FILE = "datos_rutina_v2.json"
@@ -60,12 +61,10 @@ HABITOS_CONFIG = {
 SOLO_NOMBRES = list(HABITOS_CONFIG.keys())
 
 def main(page: ft.Page):
-    # Configuración de página ultra-básica para asegurar el arranque
-    page.title = "Panel Imperio V39"
+    page.title = "Panel Imperio V40"
     page.bgcolor = COLOR_FONDO
     page.theme_mode = ft.ThemeMode.DARK
-    page.padding = 10
-    page.scroll = "auto"
+    page.padding = 15
 
     # --- LÓGICA DE DATOS SEGURA ---
     def cargar_datos():
@@ -73,26 +72,23 @@ def main(page: ft.Page):
             if os.path.exists(DB_FILE):
                 with open(DB_FILE, "r") as f:
                     return json.load(f)
-        except:
-            pass
+        except: pass
         return {}
 
     def guardar_datos(data):
         try:
             with open(DB_FILE, "w") as f:
                 json.dump(data, f)
-        except:
-            pass
+        except: pass
 
     db = cargar_datos()
     hoy_str = datetime.date.today().strftime("%Y-%m-%d")
-    
     if hoy_str not in db:
         db[hoy_str] = {n: False for n in SOLO_NOMBRES}
 
     # --- INTERFAZ ---
-    progreso_texto = ft.Text("0%", size=40, weight="bold", color=COLOR_ACENTO)
-    progreso_ring = ft.ProgressRing(width=150, height=150, stroke_width=12, color=COLOR_ACENTO)
+    progreso_texto = ft.Text("0%", size=35, weight="bold", color=COLOR_ACENTO)
+    progreso_ring = ft.ProgressRing(width=140, height=140, stroke_width=10, color=COLOR_ACENTO)
     
     def actualizar_progreso():
         total = len(SOLO_NOMBRES)
@@ -107,38 +103,41 @@ def main(page: ft.Page):
         guardar_datos(db)
         actualizar_progreso()
 
-    lista_habitos = ft.Column(spacing=10)
+    lista_habitos = ft.Column(spacing=12, scroll="auto")
     for nombre in SOLO_NOMBRES:
         datos = HABITOS_CONFIG[nombre]
         lista_habitos.controls.append(
             ft.Container(
                 content=ft.Row([
-                    ft.Icon(name=datos[0], color=datos[1]),
+                    ft.Icon(name=datos[0], color=datos[1], size=22),
                     ft.Text(nombre, size=14, color="white", expand=True),
                     ft.Checkbox(value=db[hoy_str].get(nombre, False), 
-                                fill_color=datos[1],
-                                on_change=lambda e, n=nombre: on_check(e, n))
+                                on_change=lambda e, n=nombre: on_check(e, n),
+                                fill_color=datos[1])
                 ]),
-                bgcolor="#1E1E1E",
+                bgcolor="#1C1C1E",
                 padding=12,
-                border_radius=10
+                border_radius=12
             )
         )
 
     # --- ENSAMBLAJE ---
     page.add(
         ft.Column([
-            ft.Container(height=20),
-            ft.Text("MI RUTINA MILLONARIA", size=20, weight="bold", color="white"),
+            ft.Container(height=10),
+            ft.Text("HÁBITOS DE PODER", size=18, weight="bold", letter_spacing=1.2),
             ft.Container(
-                content=ft.Stack([progreso_ring, ft.Container(content=progreso_texto, alignment=ft.alignment.center, width=150, height=150)]),
-                alignment=ft.alignment.center
+                content=ft.Stack([
+                    progreso_ring, 
+                    ft.Container(content=progreso_texto, alignment=ft.alignment.center, width=140, height=140)
+                ]),
+                alignment=ft.alignment.center,
+                padding=20
             ),
-            ft.Divider(height=30, color="white24"),
-            lista_habitos,
-            ft.Container(height=20),
-            ft.Text(random.choice(FRASES_MILLONARIAS), size=12, color="white70", text_align="center", italic=True)
-        ], horizontal_alignment="center")
+            ft.Text(random.choice(FRASES_MILLONARIAS), size=12, italic=True, color="white70", text_align="center"),
+            ft.Divider(height=30, color="white10"),
+            lista_habitos
+        ], horizontal_alignment="center", expand=True)
     )
 
     actualizar_progreso()
