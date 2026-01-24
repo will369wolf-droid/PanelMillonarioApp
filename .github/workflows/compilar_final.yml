@@ -1,4 +1,4 @@
-name: Compilar Panel Millonario APK Final
+name: Compilar APK Imperio Final
 
 on:
   push:
@@ -8,38 +8,21 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Chequear código
-      uses: actions/checkout@v4
-
-    - name: Configurar Java 17
-      uses: actions/setup-java@v4
+    - uses: actions/checkout@v4
+    - uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '17'
-
-    - name: Configurar Python 3.11
-      uses: actions/setup-python@v5
+    - uses: actions/setup-python@v5
       with:
         python-version: '3.11'
-
-    - name: Instalar Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        channel: 'stable'
-
-    - name: Instalar Dependencias
-      run: |
-        python -m pip install --upgrade pip
+    - uses: subosito/flutter-action@v2
+    - run: |
+        pip install --upgrade pip
         pip install -r requirements.txt
-
-    - name: Construir APK
-      run: |
-        flet build apk --verbose
-
-    - name: Subir APK generado
-      uses: actions/upload-artifact@v4
+    - run: flet build apk --verbose
+    - uses: actions/upload-artifact@v4
       with:
-        name: PanelMillonario-APK
+        name: Panel-Imperio-Final
         path: build/apk/**/*.apk
