@@ -14,14 +14,41 @@ COLOR_FONDO = "#121212"
 
 # --- TUS ARCHIVOS ---
 CARPETA_ASSETS = "assets"
-ARCHIVO_FONDO = "fondo.gif"       
+ARCHIVO_FONDO = "Fondo.mp4"        
 ARCHIVO_MOTIVACION = "motivacion.gif" 
 
-# --- FRASES ---
+# --- FRASES COMPLETAS (30 frases originales) ---
 FRASES_MILLONARIAS = [
-    "El dinero no duerme.", "Gana la mañana, gana el día.", "Invierte en ti.",
-    "Si fuera fácil, todo el mundo lo haría.", "Tu futuro se crea hoy.",
-    "No bajes la meta, aumenta el esfuerzo.", "El éxito ama la velocidad."
+    "El dolor del sacrificio es temporal, la gloria es eterna.",
+    "No te detengas cuando estés cansado, detente cuando termines.",
+    "La disciplina es hacer lo que debes, aunque no quieras.",
+    "Tu competencia está entrenando mientras tú duermes.",
+    "Si fuera fácil, todo el mundo lo haría.",
+    "El éxito es la suma de pequeños esfuerzos diarios.",
+    "No busques motivación, busca disciplina.",
+    "Tus excusas no le importan a tu cuenta bancaria.",
+    "Trabaja en silencio y deja que tu éxito haga el ruido.",
+    "O controlas tu día, o el día te controla a ti.",
+    "La pobreza mental se cura con acción masiva.",
+    "Si no arriesgas, te conformas con lo ordinario.",
+    "El dinero no duerme.",
+    "No bajes la meta, aumenta el esfuerzo.",
+    "Hazlo con miedo, pero hazlo.",
+    "Tu futuro se crea por lo que haces hoy.",
+    "Sé tan bueno que no puedan ignorarte.",
+    "Si te ofrecen un cohete, ¡súbete!",
+    "El riesgo más grande es no tomar ninguno.",
+    "Invierte en ti, es la única inversión segura.",
+    "Obsesión es la palabra que los vagos usan para la dedicación.",
+    "Duerme tarde, levántate temprano y trabaja duro.",
+    "No necesitas suerte, necesitas moverte.",
+    "Sé el CEO de tu vida.",
+    "No pares hasta que tu firma sea un autógrafo.",
+    "Crea una vida de la que no necesites vacaciones.",
+    "El tiempo es oro, no lo regales.",
+    "Si no trabajas por tus sueños, trabajarás para otro.",
+    "Calidad sobre cantidad, siempre.",
+    "Gana la mañana, gana el día."
 ]
 
 # Configuración Hábito
@@ -46,24 +73,28 @@ def main(page: ft.Page):
     page.title = "Panel Millonario V34"
     page.theme_mode = ft.ThemeMode.DARK
     page.padding = 0
-    page.window_width = 410 
+    page.window_width = 410
     page.window_height = 850
     page.bgcolor = COLOR_FONDO
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
-    # --- CARGA DE IMÁGENES ---
+    # --- CARGA DE RECURSOS ---
     src_fondo = ARCHIVO_FONDO
     src_motivacion = ARCHIVO_MOTIVACION
 
-    # Fondo de la App
-    fondo_app = ft.Image(
-        src=src_fondo, 
-        fit=ft.ImageFit.COVER, 
-        opacity=0.3,
-        gapless_playback=True 
+    # Fondo de la App (Configurado para Video MP4)
+    fondo_app = ft.Video(
+        playlist=[ft.VideoMedia(src_fondo)],
+        playlist_mode=ft.PlaylistMode.LOOP,
+        fill_color="black",
+        aspect_ratio=9/16,
+        volume=0,
+        autoplay=True,
+        muted=True,
+        opacity=0.3
     )
 
-    # --- ANIMACIÓN DE CHECK (CORREGIDA) ---
+    # --- ANIMACIÓN DE CHECK ---
     icono_recompensa = ft.Icon(name=ft.icons.CHECK, size=150, color=ft.colors.WHITE)
     contenedor_animacion = ft.Container(
         content=icono_recompensa,
@@ -72,34 +103,26 @@ def main(page: ft.Page):
         animate_scale=ft.animation.Animation(600, ft.AnimationCurve.ELASTIC_OUT),
         opacity=0,
         animate_opacity=300,
-        visible=False, # Empieza oculto para no bloquear clics
+        visible=False,
         top=0, bottom=0, left=0, right=0,
     )
 
     def lanzar_animacion(icono_nombre, color_efecto):
         icono_recompensa.name = icono_nombre
         icono_recompensa.color = color_efecto
-        
-        # 1. Aparecer
         contenedor_animacion.visible = True
         contenedor_animacion.opacity = 1
         contenedor_animacion.scale = ft.transform.Scale(1.5)
         page.update()
-        
-        # 2. Esperar
         time.sleep(1.5)
-        
-        # 3. Desvanecer
         contenedor_animacion.opacity = 0
         contenedor_animacion.scale = ft.transform.Scale(0)
         page.update()
-        
-        # 4. Ocultar completamente (para liberar clics)
-        time.sleep(0.3) 
+        time.sleep(0.3)
         contenedor_animacion.visible = False
         page.update()
 
-    # --- DB ---
+    # --- BASE DE DATOS ---
     def cargar_datos():
         if not os.path.exists(DB_FILE): return {}
         try:
@@ -135,9 +158,7 @@ def main(page: ft.Page):
             snack_bar.open = True
             page.update()
 
-    # ==========================
-    #   PESTAÑA 1: RUTINA
-    # ==========================
+    # PESTAÑA 1: RUTINA
     progreso_texto = ft.Text("0%", size=45, weight="bold", color=COLOR_ACENTO)
     progreso_ring = ft.ProgressRing(width=180, height=180, stroke_width=15, bgcolor=ft.colors.with_opacity(0.3, "black"), color=COLOR_ACENTO)
     lista_controles = []
@@ -145,10 +166,9 @@ def main(page: ft.Page):
     for nombre in SOLO_NOMBRES:
         datos = HABITOS_CONFIG[nombre]
         chk = ft.Switch(value=db[hoy_str].get(nombre, False), on_change=lambda e, x=nombre: cambiar_habito(e, x), active_color=datos[1])
-        
         tarjeta = ft.Container(
             content=ft.Row([ft.Icon(datos[0], color=datos[1], size=24), ft.Container(width=10), ft.Text(nombre, size=13, color="white", weight="w500", expand=True), chk]),
-            bgcolor=ft.colors.with_opacity(0.6, "black"), 
+            bgcolor=ft.colors.with_opacity(0.6, "black"),
             padding=15, border_radius=12, border=ft.border.all(1, ft.colors.with_opacity(0.3, datos[1])),
             blur=ft.Blur(5, 5, ft.BlurTileMode.MIRROR)
         )
@@ -171,9 +191,7 @@ def main(page: ft.Page):
         progreso_texto.value = f"{int(ratio * 100)}%"
         page.update()
 
-    # ==========================
-    #   PESTAÑA 2: CALENDARIO
-    # ==========================
+    # PESTAÑA 2: CALENDARIO
     stats_texto_mes = ft.Text("Mes", size=20, weight="bold", color="white")
     stats_anillo_mes = ft.ProgressRing(width=100, height=100, stroke_width=8, color=ft.colors.PURPLE, bgcolor=ft.colors.with_opacity(0.3, "black"))
     stats_porcentaje_mes = ft.Text("0%", size=18, weight="bold")
@@ -183,29 +201,24 @@ def main(page: ft.Page):
     def cargar_calendario():
         grid_calendario.controls.clear()
         hoy = datetime.date.today()
-        year = hoy.year
-        month = hoy.month
-        num_dias = calendar.monthrange(year, month)[1]
-        nombre_mes = calendar.month_name[month]
-        stats_texto_mes.value = f"{nombre_mes} {year}"
+        num_dias = calendar.monthrange(hoy.year, hoy.month)[1]
+        stats_texto_mes.value = f"{calendar.month_name[hoy.month]} {hoy.year}"
         
-        # Logica Porcentaje Real
+        # Logica Porcentaje
         dias_pasados = hoy.day
         habitos_posibles = dias_pasados * len(SOLO_NOMBRES)
         hechos_totales = 0
         for d in range(1, num_dias + 1):
-             f_key = f"{year}-{month:02d}-{d:02d}"
-             if f_key in db: hechos_totales += sum(1 for v in db[f_key].values() if v)
+            f_key = f"{hoy.year}-{hoy.month:02d}-{d:02d}"
+            if f_key in db: hechos_totales += sum(1 for v in db[f_key].values() if v)
         
         ratio = hechos_totales / habitos_posibles if habitos_posibles > 0 else 0
-        if ratio > 1.0: ratio = 1.0
-        stats_anillo_mes.value = ratio
-        stats_porcentaje_mes.value = f"{int(ratio * 100)}%"
+        stats_anillo_mes.value = min(ratio, 1.0)
+        stats_porcentaje_mes.value = f"{int(min(ratio, 1.0) * 100)}%"
 
-        # Grid
         fila = []
         for dia in range(1, num_dias + 1):
-            f_key = f"{year}-{month:02d}-{dia:02d}"
+            f_key = f"{hoy.year}-{hoy.month:02d}-{dia:02d}"
             color = ft.colors.with_opacity(0.3, "white")
             if f_key in db:
                 h = sum(1 for v in db[f_key].values() if v)
@@ -214,14 +227,11 @@ def main(page: ft.Page):
                 elif r >= 0.5: color = ft.colors.AMBER_600
                 elif r > 0: color = ft.colors.RED_900
             
-            # Resaltar hoy
             borde = ft.border.all(2, COLOR_ACENTO) if dia == hoy.day else None
-
             btn = ft.Container(
                 content=ft.Text(str(dia), color="white", weight="bold"),
                 width=40, height=40, bgcolor=color, border_radius=5, alignment=ft.alignment.center,
-                border=borde,
-                on_click=lambda e, f=f_key: mostrar_detalle(f)
+                border=borde, on_click=lambda e, f=f_key: mostrar_detalle(f)
             )
             fila.append(btn)
             if len(fila) == 7 or dia == num_dias:
@@ -241,7 +251,6 @@ def main(page: ft.Page):
             if aciertos:
                 col.append(ft.Text(f"✅ LOGRADO ({len(aciertos)})", color="green", weight="bold"))
                 for h in aciertos: col.append(ft.Text(f" • {h}", size=12, color="white70"))
-            col.append(ft.Container(height=10))
             if fallos:
                 col.append(ft.Text(f"❌ PENDIENTE ({len(fallos)})", color="red", weight="bold"))
                 for h in fallos: col.append(ft.Text(f" • {h}", size=12, color="white70"))
@@ -262,11 +271,8 @@ def main(page: ft.Page):
         contenedor_detalles
     ], scroll="auto", expand=True, horizontal_alignment="center")
 
-    # ==========================
-    #   PESTAÑA 3: MENTORES
-    # ==========================
+    # PESTAÑA 3: MENTORES
     txt_frase = ft.Text("Toca la imagen.", size=18, text_align="center", color="white", font_family="Consolas")
-    
     tarjeta = ft.Container(
         content=ft.Column([
             ft.Icon(ft.icons.FORMAT_QUOTE, color=COLOR_ACENTO, size=30),
@@ -284,12 +290,7 @@ def main(page: ft.Page):
         page.update()
 
     globo = ft.Container(
-        content=ft.Image(
-            src=src_motivacion, 
-            width=220, height=220, 
-            fit=ft.ImageFit.CONTAIN,
-            gapless_playback=True
-        ),
+        content=ft.Image(src=src_motivacion, width=220, height=220, fit=ft.ImageFit.CONTAIN, gapless_playback=True),
         on_click=cambiar_frase, border_radius=110, padding=10,
         shadow=ft.BoxShadow(blur_radius=40, color=ft.colors.with_opacity(0.4, ft.colors.BLUE))
     )
@@ -304,7 +305,7 @@ def main(page: ft.Page):
         ], horizontal_alignment="center", alignment=ft.MainAxisAlignment.CENTER)
     )
 
-    # --- NAVEGACIÓN ---
+    # NAVEGACIÓN
     def cambiar_tab(e):
         idx = e.control.selected_index
         layout.controls.clear()
@@ -324,14 +325,11 @@ def main(page: ft.Page):
 
     layout = ft.Column([vista_rutina], expand=True)
     page.add(ft.Stack([
-        fondo_app, 
-        ft.Column([layout, nav], expand=True, horizontal_alignment="center"), 
+        fondo_app,
+        ft.Column([layout, nav], expand=True, horizontal_alignment="center"),
         contenedor_animacion
     ], expand=True))
     
     actualizar_rutina()
 
-# --- MODO HÍBRIDO (CORREGIDO) ---
-# view=ft.FLET_APP: Para que abra ventana en Windows
-# port=8550: Para que funcione el servidor
 ft.app(target=main, assets_dir="assets", view=ft.FLET_APP, port=8550, host="0.0.0.0")
