@@ -14,7 +14,7 @@ COLOR_FONDO = "#121212"
 ARCHIVO_FONDO = "assets/Fondo.mp4"        
 ARCHIVO_MOTIVACION = "assets/motivacion.gif" 
 
-# --- TUS 30 FRASES (Sin cambios) ---
+# --- TUS 30 FRASES MILLONARIAS ---
 FRASES_MILLONARIAS = [
     "El dolor del sacrificio es temporal, la gloria es eterna.",
     "No te detengas cuando estés cansado, detente cuando termines.",
@@ -63,7 +63,6 @@ HABITOS_CONFIG = {
     "🧠 Reflexión diaria": ["lightbulb", ft.Colors.YELLOW],
     "😴 Dormir temprano": ["hotel", ft.Colors.INDIGO_ACCENT],
 }
-SOLO_NOMBRES = list(HABITOS_CONFIG.keys())
 
 def main(page: ft.Page):
     page.title = "Panel Millonario"
@@ -71,7 +70,7 @@ def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.DARK
     page.padding = 0
 
-    # 1. El video empieza invisible para no bloquear la pantalla negra
+    # Fondo de video inicialmente oculto
     fondo_video = ft.Video(
         playlist=[ft.VideoMedia(ARCHIVO_FONDO)],
         playlist_mode=ft.PlaylistMode.LOOP,
@@ -81,24 +80,20 @@ def main(page: ft.Page):
         opacity=0
     )
 
-    # --- LA FUNCIÓN CON "ESCUDO" (TRY/EXCEPT) ---
-    def intentar_cargar_video():
+    # Función "Escudo" para cargar video después de la interfaz
+    def cargar_video_seguro():
         try:
-            # Esperamos 4 segundos a que veas tus botones
             time.sleep(4) 
             fondo_video.visible = True
             fondo_video.play()
-            # Subimos la visibilidad poco a poco
-            for i in range(1, 6):
+            for i in range(1, 4):
                 fondo_video.opacity = i * 0.1
                 page.update()
                 time.sleep(0.5)
         except:
-            # Si el video da error, esta parte se activa e impide la pantalla negra
-            print("Video incompatible, usando fondo sólido.")
-            page.update()
+            pass # Si falla, la App sigue funcionando con fondo negro
 
-    # 2. Interfaz de usuario (botones y progreso)
+    # Interfaz de usuario
     progreso_texto = ft.Text("0%", size=45, weight="bold", color=COLOR_ACENTO)
     progreso_ring = ft.ProgressRing(width=180, height=180, stroke_width=15, color=COLOR_ACENTO)
     
@@ -130,7 +125,6 @@ def main(page: ft.Page):
         ]
     )
 
-    # 3. Ensamblaje: El video abajo, los botones arriba
     page.add(
         ft.Stack([
             fondo_video,
@@ -138,7 +132,6 @@ def main(page: ft.Page):
         ], expand=True)
     )
 
-    # Lanzamos el video en segundo plano sin molestar a la App
-    threading.Thread(target=intentar_cargar_video, daemon=True).start()
+    threading.Thread(target=cargar_video_seguro, daemon=True).start()
 
 ft.app(target=main, assets_dir="assets")
