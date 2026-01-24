@@ -1,0 +1,39 @@
+name: Construir APK Panel Millonario
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Chequear código
+      uses: actions/checkout@v3
+
+    - name: Instalar Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Instalar Flutter (Necesario para Flet)
+      uses: subosito/flutter-action@v2
+      with:
+        channel: 'stable'
+
+    - name: Instalar dependencias
+      run: |
+        pip install -r requirements.txt
+        pip install flet
+
+    - name: Construir APK
+      run: |
+        flet build apk --verbose
+
+    - name: Subir APK generado
+      uses: actions/upload-artifact@v4
+      with:
+        name: PanelMillonario-APK
+        path: build/apk/**/*.apk
