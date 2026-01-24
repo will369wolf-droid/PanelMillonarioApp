@@ -19,20 +19,19 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Configurar Python
+    - name: Configurar Python 3.11
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11' # Usamos la versión nativa para evitar conflictos
+        python-version: '3.11'
 
     - name: Instalar Flutter
       uses: subosito/flutter-action@v2
       with:
         channel: 'stable'
 
-    - name: Instalar dependencias
-# Instalamos flet directamente para asegurar que las herramientas de construcción estén presentes
+    - name: Instalar Dependencias
       run: |
-        pip install --upgrade pip
+        python -m pip install --upgrade pip
         pip install -r requirements.txt
 
     - name: Construir APK
