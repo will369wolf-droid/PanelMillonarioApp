@@ -2,15 +2,11 @@ import flet as ft
 import datetime
 import json
 import os
-import calendar
-import random
 
 # --- CONFIGURACIÓN ---
 DB_FILE = "datos_rutina_v2.json"
 COLOR_ACENTO = "#00d26a"  
 COLOR_FONDO = "#121212"
-# Cambiamos el video por la imagen motivacional que ya tienes
-ARCHIVO_FONDO_IMG = "assets/motivacion.gif" 
 
 # --- TUS 30 FRASES ORIGINALES ---
 FRASES_MILLONARIAS = [
@@ -64,38 +60,39 @@ HABITOS_CONFIG = {
 SOLO_NOMBRES = list(HABITOS_CONFIG.keys())
 
 def main(page: ft.Page):
-    page.title = "Panel Imperio V38"
+    # Configuración de página ultra-básica para asegurar el arranque
+    page.title = "Panel Imperio V39"
     page.bgcolor = COLOR_FONDO
     page.theme_mode = ft.ThemeMode.DARK
-    page.padding = 0
+    page.padding = 10
+    page.scroll = "auto"
 
-    # Fondo de Imagen (Infinitamente más estable que el video en Android)
-    img_fondo = ft.Image(
-        src=ARCHIVO_FONDO_IMG,
-        fit=ft.ImageFit.COVER,
-        opacity=0.2,
-        expand=True
-    )
-
-    # --- LÓGICA DE DATOS ---
+    # --- LÓGICA DE DATOS SEGURA ---
     def cargar_datos():
-        if not os.path.exists(DB_FILE): return {}
         try:
-            with open(DB_FILE, "r") as f: return json.load(f)
-        except: return {}
+            if os.path.exists(DB_FILE):
+                with open(DB_FILE, "r") as f:
+                    return json.load(f)
+        except:
+            pass
+        return {}
 
     def guardar_datos(data):
-        with open(DB_FILE, "w") as f: json.dump(data, f)
+        try:
+            with open(DB_FILE, "w") as f:
+                json.dump(data, f)
+        except:
+            pass
 
     db = cargar_datos()
     hoy_str = datetime.date.today().strftime("%Y-%m-%d")
+    
     if hoy_str not in db:
         db[hoy_str] = {n: False for n in SOLO_NOMBRES}
-        guardar_datos(db)
 
     # --- INTERFAZ ---
-    progreso_texto = ft.Text("0%", size=45, weight="bold", color=COLOR_ACENTO)
-    progreso_ring = ft.ProgressRing(width=180, height=180, stroke_width=15, color=COLOR_ACENTO)
+    progreso_texto = ft.Text("0%", size=40, weight="bold", color=COLOR_ACENTO)
+    progreso_ring = ft.ProgressRing(width=150, height=150, stroke_width=12, color=COLOR_ACENTO)
     
     def actualizar_progreso():
         total = len(SOLO_NOMBRES)
@@ -105,42 +102,45 @@ def main(page: ft.Page):
         progreso_texto.value = f"{int(ratio * 100)}%"
         page.update()
 
-    lista_controles = ft.Column(spacing=10, scroll="auto")
+    def on_check(e, nombre):
+        db[hoy_str][nombre] = e.control.value
+        guardar_datos(db)
+        actualizar_progreso()
+
+    lista_habitos = ft.Column(spacing=10)
     for nombre in SOLO_NOMBRES:
         datos = HABITOS_CONFIG[nombre]
-        lista_controles.controls.append(
+        lista_habitos.controls.append(
             ft.Container(
                 content=ft.Row([
-                    ft.Icon(name=datos[0], color=datos[1], size=24),
-                    ft.Text(nombre, size=13, color="white", expand=True),
-                    ft.Switch(value=db[hoy_str].get(nombre, False), 
-                              active_color=datos[1], 
-                              on_change=lambda e, n=nombre: (db[hoy_str].update({n: e.control.value}), guardar_datos(db), actualizar_progreso()))
+                    ft.Icon(name=datos[0], color=datos[1]),
+                    ft.Text(nombre, size=14, color="white", expand=True),
+                    ft.Checkbox(value=db[hoy_str].get(nombre, False), 
+                                fill_color=datos[1],
+                                on_change=lambda e, n=nombre: on_check(e, n))
                 ]),
-                bgcolor=ft.Colors.with_opacity(0.6, "black"),
-                padding=15, border_radius=12,
+                bgcolor="#1E1E1E",
+                padding=12,
+                border_radius=10
             )
         )
 
-    layout = ft.Column([
-        ft.Container(height=40),
-        ft.Stack([progreso_ring, ft.Container(content=progreso_texto, alignment=ft.alignment.center, width=180, height=180)]),
-        ft.Container(content=lista_controles, padding=20, expand=True)
-    ], expand=True)
-
-    nav = ft.NavigationBar(
-        destinations=[
-            ft.NavigationDestination(icon="check_circle", label="Mi Día"),
-            ft.NavigationDestination(icon="calendar_month", label="Historial"),
-            ft.NavigationDestination(icon="psychology", label="Mentores")
-        ]
+    # --- ENSAMBLAJE ---
+    page.add(
+        ft.Column([
+            ft.Container(height=20),
+            ft.Text("MI RUTINA MILLONARIA", size=20, weight="bold", color="white"),
+            ft.Container(
+                content=ft.Stack([progreso_ring, ft.Container(content=progreso_texto, alignment=ft.alignment.center, width=150, height=150)]),
+                alignment=ft.alignment.center
+            ),
+            ft.Divider(height=30, color="white24"),
+            lista_habitos,
+            ft.Container(height=20),
+            ft.Text(random.choice(FRASES_MILLONARIAS), size=12, color="white70", text_align="center", italic=True)
+        ], horizontal_alignment="center")
     )
-
-    page.add(ft.Stack([
-        img_fondo,
-        ft.Column([layout, nav], expand=True)
-    ], expand=True))
 
     actualizar_progreso()
 
-ft.app(target=main, assets_dir="assets")
+ft.app(target=main)
