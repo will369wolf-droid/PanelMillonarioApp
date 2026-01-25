@@ -1,11 +1,8 @@
 import flet as ft
-import datetime
-import json
-import os
 import random
+import datetime
 
 # --- CONFIGURACIÓN ---
-DB_FILE = "datos_rutina_v2.json"
 COLOR_ACENTO = "#00d26a"  
 COLOR_FONDO = "#121212"
 
@@ -61,64 +58,86 @@ HABITOS_CONFIG = {
 SOLO_NOMBRES = list(HABITOS_CONFIG.keys())
 
 def main(page: ft.Page):
-    page.title = "Panel Imperio V46"
+    # Configuración inicial segura
+    page.title = "Panel Imperio"
     page.bgcolor = COLOR_FONDO
     page.theme_mode = ft.ThemeMode.DARK
     page.padding = 20
+    page.scroll = "auto"
 
-    def cargar_datos():
-        try:
-            if os.path.exists(DB_FILE):
-                with open(DB_FILE, "r") as f: return json.load(f)
-        except: pass
-        return {}
-
-    def guardar_datos(data):
-        try:
-            with open(DB_FILE, "w") as f: json.dump(data, f)
-        except: pass
-
-    db = cargar_datos()
+    # --- SISTEMA DE GUARDADO SEGURO (Client Storage) ---
     hoy_str = datetime.date.today().strftime("%Y-%m-%d")
-    if hoy_str not in db: db[hoy_str] = {n: False for n in SOLO_NOMBRES}
+    
+    # Intentamos leer la memoria del celular
+    def obtener_estado_habito(nombre):
+        clave = f"{hoy_str}_{nombre}"
+        return page.client_storage.get(clave) or False
 
+    def guardar_estado_habito(nombre, valor):
+        clave = f"{hoy_str}_{nombre}"
+        page.client_storage.set(clave, valor)
+
+    # --- INTERFAZ ---
     progreso_texto = ft.Text("0%", size=35, weight="bold", color=COLOR_ACENTO)
     progreso_ring = ft.ProgressRing(width=140, height=140, stroke_width=10, color=COLOR_ACENTO)
     
     def actualizar_progreso():
         total = len(SOLO_NOMBRES)
-        completados = sum(1 for h in SOLO_NOMBRES if db.get(hoy_str, {}).get(h, False))
+        completados = 0
+        for n in SOLO_NOMBRES:
+            if obtener_estado_habito(n):
+                completados += 1
+        
         ratio = completados / total if total > 0 else 0
         progreso_ring.value = ratio
         progreso_texto.value = f"{int(ratio * 100)}%"
         page.update()
 
-    lista_habitos = ft.Column(spacing=10, scroll="auto")
+    def on_check(e, nombre):
+        guardar_estado_habito(nombre, e.control.value)
+        actualizar_progreso()
+
+    lista_habitos = ft.Column(spacing=10)
     for nombre in SOLO_NOMBRES:
         datos = HABITOS_CONFIG[nombre]
+        valor_actual = obtener_estado_habito(nombre)
+        
         lista_habitos.controls.append(
             ft.Container(
                 content=ft.Row([
                     ft.Icon(name=datos[0], color=datos[1], size=22),
                     ft.Text(nombre, size=14, color="white", expand=True),
-                    ft.Checkbox(value=db[hoy_str].get(nombre, False), 
-                                on_change=lambda e, n=nombre: (db[hoy_str].update({n: e.control.value}), guardar_datos(db), actualizar_progreso()),
+                    ft.Checkbox(value=valor_actual, 
+                                on_change=lambda e, n=nombre: on_check(e, n),
                                 fill_color=datos[1])
                 ]),
-                bgcolor="#1E1E1E", padding=12, border_radius=10
+                bgcolor="#1E1E1E",
+                padding=12,
+                border_radius=10
             )
         )
 
+    # --- ENSAMBLAJE FINAL ---
     page.add(
         ft.Column([
             ft.Container(height=10),
-            ft.Text("IMPULSO DIARIO", size=18, weight="bold", letter_spacing=1.5),
-            ft.Container(content=ft.Stack([progreso_ring, ft.Container(content=progreso_texto, alignment=ft.alignment.center, width=140, height=140)]), alignment=ft.alignment.center, padding=15),
+            ft.Text("IMPULSO DIARIO", size=18, weight="bold", color="white", letter_spacing=1.5),
+            ft.Container(
+                content=ft.Stack([
+                    progreso_ring, 
+                    ft.Container(content=progreso_texto, alignment=ft.alignment.center, width=140, height=140)
+                ]),
+                alignment=ft.alignment.center,
+                padding=15
+            ),
             ft.Text(random.choice(FRASES_MILLONARIAS), size=12, italic=True, color="white70", text_align="center"),
             ft.Divider(height=25, color="white12"),
-            lista_habitos
-        ], horizontal_alignment="center", expand=True)
+            lista_habitos,
+            ft.Container(height=20) # Espacio final
+        ], horizontal_alignment="center")
     )
+
     actualizar_progreso()
 
+# ATENCIÓN: Eliminamos assets_dir para evitar errores de carga
 ft.app(target=main)
