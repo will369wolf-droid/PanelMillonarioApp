@@ -1,28 +1,19 @@
-name: Compilar APK Imperio Final
-
+name: Compilar APK Panel Imperio
 on:
   push:
-    branches: [ "main" ]
-  workflow_dispatch:
-
+    branches: [ main ]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '17'
-    - uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-    - uses: subosito/flutter-action@v2
-    - run: |
-        pip install --upgrade pip
-        pip install -r requirements.txt
-    - run: flet build apk --verbose
-    - uses: actions/upload-artifact@v4
-      with:
-        name: Panel-Imperio-Final
-        path: build/apk/**/*.apk
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: |
+          pip install flet
+          flet build apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: App-Imperio
+          path: build/apk/*.apk
