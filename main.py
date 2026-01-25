@@ -1,4 +1,4 @@
-zimport flet as ft
+import flet as ft
 import datetime
 import json
 import os
@@ -61,7 +61,7 @@ HABITOS_CONFIG = {
 SOLO_NOMBRES = list(HABITOS_CONFIG.keys())
 
 def main(page: ft.Page):
-    page.title = "Panel Imperio V42"
+    page.title = "Panel Imperio V46"
     page.bgcolor = COLOR_FONDO
     page.theme_mode = ft.ThemeMode.DARK
     page.padding = 20
@@ -122,4 +122,3 @@ def main(page: ft.Page):
     actualizar_progreso()
 
 ft.app(target=main)
-
