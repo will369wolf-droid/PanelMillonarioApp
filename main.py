@@ -1,4 +1,4 @@
-import flet as ft
+zimport flet as ft
 import datetime
 import json
 import os
@@ -122,3 +122,4 @@ def main(page: ft.Page):
     actualizar_progreso()
 
 ft.app(target=main)
+
