@@ -1,12 +1,14 @@
 import flet as ft
 import datetime
 import random
+import json
+import os
 
-# --- CONFIGURACIÓN ---
+# --- CONFIGURACIÓN VISUAL ---
 COLOR_ACENTO = "#00d26a"
 COLOR_FONDO_IMPERIO = "#121212"
 
-# --- TUS 30 FRASES ORIGINALES (Regresaron) ---
+# --- TUS FRASES ---
 FRASES_MILLONARIAS = [
     "El dolor del sacrificio es temporal, la gloria es eterna.",
     "No te detengas cuando estés cansado, detente cuando termines.",
@@ -40,63 +42,88 @@ FRASES_MILLONARIAS = [
     "Gana la mañana, gana el día."
 ]
 
+# --- TUS HÁBITOS (Colores corregidos) ---
 HABITOS_CONFIG = {
-    "Despertar 5:00 am": ft.Colors.ORANGE,
-    "Tomar agua": ft.Colors.BLUE,
-    "Objetivo principal": ft.Colors.RED_ACCENT,
-    "Investigar productos": ft.Colors.PURPLE_ACCENT,
-    "Aprender algo nuevo": ft.Colors.YELLOW_ACCENT,
-    "Aplicar lo aprendido": ft.Colors.AMBER,
-    "Construir negocio": ft.Colors.CYAN,
-    "Lanzar anuncios": ft.Colors.PINK_ACCENT,
-    "Ejercicio fisico": ft.Colors.GREEN_ACCENT,
-    "Jornada de trabajo": ft.Colors.BLUE_GREY,
-    "Revisar numeros": ft.Colors.TEAL_ACCENT,
-    "Reflexion diaria": ft.Colors.YELLOW,
-    "Dormir temprano": ft.Colors.INDIGO_ACCENT,
+    "Despertar 5:00 am": "orange",
+    "Tomar agua": "blue",
+    "Objetivo principal": "red",
+    "Investigar productos": "purple",
+    "Aprender algo nuevo": "yellow",
+    "Aplicar lo aprendido": "amber",
+    "Construir negocio": "cyan",
+    "Lanzar anuncios": "pink",
+    "Ejercicio fisico": "green",
+    "Jornada de trabajo": "blue_grey",
+    "Revisar numeros": "teal",
+    "Reflexion diaria": "yellow",
+    "Dormir temprano": "indigo",
 }
 
 def main(page: ft.Page):
-    # --- PANTALLA SEGURA DE ARRANQUE ---
+    # 1. PANTALLA BLANCA DE SEGURIDAD (La que evita la pantalla negra)
     page.title = "Panel Imperio"
     page.bgcolor = "white"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.padding = 20
 
-    # --- CARGA DEL IMPERIO ---
+    # --- SISTEMA DE GUARDADO ROBUSTO (JSON) ---
+    # Usamos esto porque el diagnóstico dijo que 'client_storage' fallaba
+    def cargar_base_datos():
+        try:
+            if os.path.exists("imperio_data.json"):
+                with open("imperio_data.json", "r") as f:
+                    return json.load(f)
+        except:
+            pass
+        return {}
+
+    def guardar_base_datos(db):
+        try:
+            with open("imperio_data.json", "w") as f:
+                json.dump(db, f)
+        except:
+            pass # Si falla, la app sigue viva
+
+    # --- FUNCIÓN PRINCIPAL DEL IMPERIO ---
     def iniciar_sistema(e):
+        # Limpiamos y ponemos modo oscuro
         page.clean()
         page.bgcolor = COLOR_FONDO_IMPERIO
         page.vertical_alignment = ft.MainAxisAlignment.START
         page.padding = 15
         
         try:
+            # Preparamos datos
             hoy_str = datetime.date.today().strftime("%Y-%m-%d")
-            total_habitos = len(HABITOS_CONFIG)
+            db = cargar_base_datos()
+            if hoy_str not in db:
+                db[hoy_str] = {}
 
-            # --- Lógica de Memoria ---
-            def guardar(nombre, valor):
-                try: page.client_storage.set(f"{hoy_str}_{nombre}", valor)
-                except: pass
+            # Funciones para los checkboxes
+            def al_cambiar(nombre, valor):
+                db[hoy_str][nombre] = valor
+                guardar_base_datos(db)
+                actualizar_grafico()
 
-            def leer(nombre):
-                try: return page.client_storage.get(f"{hoy_str}_{nombre}") or False
-                except: return False
+            def leer_estado(nombre):
+                return db.get(hoy_str, {}).get(nombre, False)
 
-            # --- Componentes Dinámicos ---
-            progreso_texto = ft.Text("0%", size=30, weight="bold", color=COLOR_ACENTO)
-            progreso_ring = ft.ProgressRing(width=120, height=120, stroke_width=10, color=COLOR_ACENTO, value=0)
+            # Componentes del Gráfico
+            txt_progreso = ft.Text("0%", size=30, weight="bold", color=COLOR_ACENTO)
+            anillo = ft.ProgressRing(width=120, height=120, stroke_width=10, color=COLOR_ACENTO, value=0)
 
-            def actualizar_ui():
-                completados = sum(1 for k in HABITOS_CONFIG if leer(k))
-                ratio = completados / total_habitos if total_habitos > 0 else 0
-                progreso_ring.value = ratio
-                progreso_texto.value = f"{int(ratio * 100)}%"
+            def actualizar_grafico():
+                total = len(HABITOS_CONFIG)
+                completados = sum(1 for h in HABITOS_CONFIG if leer_estado(h))
+                ratio = completados / total if total > 0 else 0
+                anillo.value = ratio
+                txt_progreso.value = f"{int(ratio * 100)}%"
                 page.update()
 
-            # --- Construcción de la Interfaz ---
-            # 1. Cabecera con Frase y Progreso
+            # --- CONSTRUIMOS LA INTERFAZ ---
+            
+            # 1. Cabecera
             page.add(
                 ft.Container(
                     content=ft.Column([
@@ -104,8 +131,8 @@ def main(page: ft.Page):
                         ft.Text(random.choice(FRASES_MILLONARIAS), color="white70", italic=True, size=12, text_align="center"),
                         ft.Container(height=10),
                         ft.Stack([
-                            progreso_ring,
-                            ft.Container(content=progreso_texto, alignment=ft.alignment.center, width=120, height=120)
+                            anillo,
+                            ft.Container(content=txt_progreso, alignment=ft.alignment.center, width=120, height=120)
                         ], alignment=ft.alignment.center),
                     ], horizontal_alignment="center"),
                     alignment=ft.alignment.center,
@@ -114,27 +141,27 @@ def main(page: ft.Page):
                 ft.Divider(color="white12", height=20)
             )
 
-            # 2. Lista de Hábitos
-            # Usamos Scroll para que quepan todos los hábitos en pantallas pequeñas
-            lista_scroll = ft.Column(scroll="auto", expand=True) # expand=True es clave para que el scroll funcione
+            # 2. Lista de Hábitos (Con Scroll)
+            lista = ft.Column(scroll="auto", expand=True)
 
-            for nombre, color_habito in HABITOS_CONFIG.items():
-                estado = leer(nombre)
+            for nombre, color_code in HABITOS_CONFIG.items():
+                estado = leer_estado(nombre)
                 
-                # Checkbox con lógica de actualización
-                check = ft.Checkbox(
+                # Checkbox
+                chk = ft.Checkbox(
                     value=estado,
                     active_color=COLOR_ACENTO,
-                    fill_color=color_habito,
-                    on_change=lambda e, n=nombre: (guardar(n, e.control.value), actualizar_ui())
+                    fill_color=color_code,
+                    on_change=lambda e, n=nombre: al_cambiar(n, e.control.value)
                 )
-                
-                lista_scroll.controls.append(
+
+                lista.controls.append(
                     ft.Container(
                         content=ft.Row([
-                            ft.Container(width=12, height=12, bgcolor=color_habito, border_radius=3),
+                            # Cuadradito de color (Más seguro que Iconos)
+                            ft.Container(width=12, height=12, bgcolor=color_code, border_radius=3),
                             ft.Text(nombre, size=15, color="white", expand=True),
-                            check
+                            chk
                         ]),
                         bgcolor="#1E1E1E",
                         padding=12,
@@ -143,17 +170,15 @@ def main(page: ft.Page):
                     )
                 )
 
-            # Agregamos la lista con scroll
-            page.add(lista_scroll)
-            
-            # Primera actualización para calcular el % inicial
-            actualizar_ui()
+            page.add(lista)
+            actualizar_grafico() # Primera carga
             
         except Exception as error:
+            # Si algo falla, lo mostramos en rojo
             page.add(ft.Text(f"Error: {error}", color="red"))
             page.update()
 
-    # --- BOTÓN DE INICIO (El que nos salvó la vida) ---
+    # --- BOTÓN DE ENTRADA (Mismo de antes) ---
     boton = ft.ElevatedButton(
         "ENTRAR A MI RUTINA", 
         color="white", 
@@ -166,7 +191,7 @@ def main(page: ft.Page):
     page.add(
         ft.Column([
             ft.Text("¡HOLA LEO!", size=35, color="black", weight="bold"),
-            ft.Text("Tu imperio te espera.", size=16, color="grey"),
+            ft.Text("Sistema listo.", size=16, color="grey"),
             ft.Container(height=30),
             boton
         ], alignment="center", horizontal_alignment="center", expand=True)
