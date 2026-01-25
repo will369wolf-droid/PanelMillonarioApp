@@ -1,4 +1,4 @@
-name: Compilar APK Panel Imperio
+name: Compilar APK Imperio
 on:
   push:
     branches: [ main ]
