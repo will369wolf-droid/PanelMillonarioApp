@@ -4,11 +4,14 @@ import random
 import json
 import os
 
-# --- COLORES ---
-COLOR_FONDO = "#121212"
-COLOR_TARJETA = "#1E1E1E"
-COLOR_VERDE = "#00d26a"
+# --- COLORES "STEALTH" (Modo Oscuro de Lujo) ---
+COLOR_FONDO = "#000000"       # Negro puro
+COLOR_TARJETA = "#111111"     # Gris casi negro
+COLOR_TARJETA_BRN = "#1A1A1A" # Un poco más claro para contraste
+COLOR_ACENTO = "#00FF88"      # Verde Neón (Cyberpunk)
+COLOR_TEXTO = "#FFFFFF"
 
+# --- DATOS BLINDADOS ---
 FRASES_MILLONARIAS = [
     "Gana la mañana, gana el día.",
     "La disciplina es libertad.",
@@ -17,7 +20,9 @@ FRASES_MILLONARIAS = [
     "No busques motivación, busca disciplina.",
     "El éxito es la suma de pequeños esfuerzos.",
     "Invierte en ti.",
-    "Hazlo con miedo, pero hazlo."
+    "Hazlo con miedo, pero hazlo.",
+    "Sé tan bueno que no puedan ignorarte.",
+    "Tu competencia está entrenando ahora."
 ]
 
 HABITOS_CONFIG = {
@@ -39,13 +44,13 @@ HABITOS_CONFIG = {
 }
 
 def main(page: ft.Page):
-    # --- ARRANQUE SEGURO ---
-    page.title = "Imperio v64"
+    # --- ARRANQUE SEGURO (Mismo de v62) ---
+    page.title = "Imperio v65"
     page.bgcolor = "white"
     page.padding = 0
-    # Usamos constantes seguras
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    # Strings simples para evitar errores de atributos
+    page.vertical_alignment = "center" 
+    page.horizontal_alignment = "center"
     
     CENTRO_MAT = ft.Alignment(0,0)
 
@@ -62,31 +67,33 @@ def main(page: ft.Page):
             with open("imperio_data.json", "w") as f: json.dump(db, f)
         except: pass
 
-    # --- SISTEMA ---
+    # --- SISTEMA PRINCIPAL ---
     def iniciar_sistema(e):
         try:
-            # Limpieza y cambio a modo oscuro
+            # 1. Configuración Visual
             page.clean()
             page.bgcolor = COLOR_FONDO
-            page.padding = 10
-            page.vertical_alignment = ft.MainAxisAlignment.START
+            page.padding = 15
+            page.vertical_alignment = "start"
             
+            # 2. Datos
             db = cargar_db()
             hoy_str = datetime.date.today().strftime("%Y-%m-%d")
             if hoy_str not in db: db[hoy_str] = {}
 
-            # Contenedor Principal (Con Scroll Auto como en v62)
+            # Contenedor con Scroll (Igual que v62)
+            # Usamos una columna simple, sin "layouts" complejos
             contenido = ft.Column(expand=True, scroll="auto")
             
-            # Espacio para Notch (Seguridad)
+            # Espacio Notch
             contenido.controls.append(ft.Container(height=35))
 
-            # --- VISTA 1: RUTINA (Diseño Limpio) ---
+            # --- VISTA 1: RUTINA (Estilo Tarjeta Negra) ---
             def ver_rutina(e=None):
                 contenido.controls.clear()
                 contenido.controls.append(ft.Container(height=35))
                 
-                # Header
+                # Header Simple y Seguro
                 completados = sum(1 for h in HABITOS_CONFIG if db.get(hoy_str, {}).get(h, False))
                 total = len(HABITOS_CONFIG)
                 pct = int((completados / total) * 100) if total > 0 else 0
@@ -94,18 +101,19 @@ def main(page: ft.Page):
                 contenido.controls.append(
                     ft.Container(
                         content=ft.Column([
-                            ft.Text("OBJETIVO DIARIO", size=12, color="grey", weight="bold"),
-                            ft.Text(f"{pct}%", size=60, weight="bold", color=COLOR_VERDE),
-                            ft.Text("COMPLETADO", size=12, color="white")
-                        ], horizontal_alignment=ft.CrossAxisAlignment.CENTER),
+                            ft.Text("MI PROGRESO", size=12, color="grey"),
+                            ft.Text(f"{pct}%", size=50, weight="bold", color=COLOR_ACENTO),
+                            ft.Text("OBJETIVO DIARIO", size=12, color="white")
+                        ], horizontal_alignment="center"),
                         padding=20,
                         alignment=CENTRO_MAT,
                         bgcolor=COLOR_TARJETA,
-                        border_radius=15
+                        border_radius=15,
+                        border=ft.border.all(1, "#333333") # Borde fino elegante
                     )
                 )
                 
-                contenido.controls.append(ft.Container(height=10))
+                contenido.controls.append(ft.Container(height=20))
 
                 # Lista de Hábitos
                 for nombre, color_code in HABITOS_CONFIG.items():
@@ -116,75 +124,69 @@ def main(page: ft.Page):
                         guardar_db(db)
                         ver_rutina()
 
-                    # Tarjeta sin iconos complejos, solo Emoji + Texto
+                    # Tarjeta Hábito (Misma estructura v62, mejor color)
                     contenido.controls.append(
                         ft.Container(
                             content=ft.Row([
+                                # Indicador de color pequeño
+                                ft.Container(width=5, height=25, bgcolor=color_code, border_radius=2),
                                 ft.Text(nombre, size=15, color="white", weight="bold", expand=True),
-                                ft.Checkbox(value=estado, active_color=COLOR_VERDE, on_change=cambiar)
-                            ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN), # Enum Seguro
-                            bgcolor=COLOR_TARJETA,
+                                ft.Checkbox(value=estado, active_color=COLOR_ACENTO, check_color="black", on_change=cambiar)
+                            ]),
+                            bgcolor=COLOR_TARJETA_BRN,
                             padding=15,
-                            border_radius=10,
-                            margin=ft.margin.only(bottom=5)
+                            border_radius=8,
+                            margin=ft.margin.only(bottom=8)
                         )
                     )
                 page.update()
 
-            # --- VISTA 2: RACHA (Burbujas Seguras) ---
+            # --- VISTA 2: HISTORIAL (Lista Vertical Estilizada) ---
+            # Volvemos a la lista vertical (que funcionó), pero la hacemos bonita
             def ver_calendario(e=None):
                 contenido.controls.clear()
                 contenido.controls.append(ft.Container(height=35))
                 
-                contenido.controls.append(ft.Text("RACHA SEMANAL", size=20, weight="bold", color="white"))
+                contenido.controls.append(ft.Text("HISTORIAL RECIENTE", size=20, weight="bold", color="white"))
                 contenido.controls.append(ft.Container(height=10))
 
-                # Fila de Burbujas (Usando Row simple)
-                fila = ft.Row(alignment=ft.MainAxisAlignment.CENTER, spacing=10)
-                
-                for i in range(6, -1, -1):
+                for i in range(7):
                     fecha = datetime.date.today() - datetime.timedelta(days=i)
-                    dia_num = str(fecha.day)
-                    dia_letra = fecha.strftime("%a")[0].upper()
                     f_str = fecha.strftime("%Y-%m-%d")
+                    dia_letra = fecha.strftime("%A") # Nombre del día
                     
                     datos = db.get(f_str, {})
                     hechos = sum(1 for h in HABITOS_CONFIG if datos.get(h, False))
                     total = len(HABITOS_CONFIG)
                     ratio = hechos / total if total > 0 else 0
                     
-                    color_burbuja = "#333333" # Gris oscuro defecto
-                    texto_color = "white"
-                    
-                    if ratio >= 0.8: 
-                        color_burbuja = COLOR_VERDE
-                        texto_color = "black"
-                    elif ratio >= 0.4: 
-                        color_burbuja = "orange"
-                        texto_color = "black"
+                    # Colores dinámicos
+                    color_pct = COLOR_ACENTO if ratio > 0.8 else "grey"
+                    color_borde = COLOR_ACENTO if ratio > 0.8 else "#333333"
 
-                    # Burbuja hecha a mano (Container seguro)
-                    burbuja = ft.Column([
+                    # Tarjeta de Día (Vertical, seguro)
+                    contenido.controls.append(
                         ft.Container(
-                            width=35, height=35,
-                            bgcolor=color_burbuja,
-                            border_radius=35,
-                            alignment=CENTRO_MAT,
-                            content=ft.Text(dia_num, size=12, weight="bold", color=texto_color)
-                        ),
-                        ft.Text(dia_letra, size=10, color="grey")
-                    ], spacing=5, horizontal_alignment=ft.CrossAxisAlignment.CENTER)
-                    
-                    fila.controls.append(burbuja)
-
-                contenido.controls.append(
-                    ft.Container(
-                        content=fila,
-                        bgcolor=COLOR_TARJETA,
-                        padding=20,
-                        border_radius=15
+                            content=ft.Row([
+                                ft.Column([
+                                    ft.Text(f_str, color="white", weight="bold", size=16),
+                                    ft.Text("Registro diario", color="grey", size=12)
+                                ]),
+                                ft.Container(expand=True),
+                                ft.Container(
+                                    content=ft.Text(f"{int(ratio*100)}%", color="black", weight="bold"),
+                                    bgcolor=color_pct,
+                                    padding=10,
+                                    border_radius=8
+                                )
+                            ]),
+                            bgcolor=COLOR_TARJETA,
+                            padding=15,
+                            border_radius=10,
+                            margin=ft.margin.only(bottom=10),
+                            border=ft.border.all(1, color_borde)
+                        )
                     )
-                )
                 page.update()
 
             # --- VISTA 3: MENTOR ---
@@ -196,33 +198,34 @@ def main(page: ft.Page):
                 
                 contenido.controls.append(
                     ft.Column([
-                        ft.Container(height=20),
+                        ft.Container(height=40),
                         ft.Text("MENTALIDAD", size=14, color="grey", weight="bold"),
                         
                         ft.Container(
-                            content=ft.Text(f'"{frase}"', size=22, color="white", italic=True, text_align=ft.TextAlign.CENTER),
+                            content=ft.Text(f'"{frase}"', size=20, color="white", italic=True, text_align="center"),
                             bgcolor=COLOR_TARJETA,
-                            padding=30,
+                            padding=40,
                             border_radius=15,
                             margin=20,
-                            alignment=CENTRO_MAT
+                            alignment=CENTRO_MAT,
+                            border=ft.border.all(1, COLOR_ACENTO)
                         ),
                         
-                        ft.ElevatedButton("NUEVA IDEA", on_click=ver_frases, bgcolor=COLOR_VERDE, color="black")
-                    ], horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+                        ft.ElevatedButton("OTRA FRASE", on_click=ver_frases, bgcolor=COLOR_ACENTO, color="black")
+                    ], horizontal_alignment="center")
                 )
                 page.update()
 
-            # --- MENÚ DE NAVEGACIÓN (Botones Negros Elegantes) ---
-            # Usamos botones simples pero con color negro para que se vea integrado
+            # --- MENÚ DE NAVEGACIÓN (Botones Simples v62) ---
+            # Mantenemos los botones simples pero con colores oscuros
             menu = ft.Container(
                 content=ft.Row([
-                    ft.ElevatedButton("RUTINA", on_click=ver_rutina, bgcolor="#222222", color="white", expand=True),
-                    ft.ElevatedButton("RACHA", on_click=ver_calendario, bgcolor="#222222", color="white", expand=True),
-                    ft.ElevatedButton("MENTOR", on_click=ver_frases, bgcolor="#222222", color="white", expand=True),
-                ], spacing=5),
+                    ft.ElevatedButton("RUTINA", on_click=ver_rutina, bgcolor=COLOR_TARJETA, color="white", expand=True),
+                    ft.ElevatedButton("HISTORIAL", on_click=ver_calendario, bgcolor=COLOR_TARJETA, color="white", expand=True),
+                    ft.ElevatedButton("MENTOR", on_click=ver_frases, bgcolor=COLOR_TARJETA, color="white", expand=True),
+                ], spacing=10),
                 bgcolor="black",
-                padding=5
+                padding=10
             )
 
             # Ensamblaje
@@ -230,18 +233,17 @@ def main(page: ft.Page):
             ver_rutina()
 
         except Exception as e:
-            # Si falla, pantalla negra con error rojo
             page.bgcolor = "black"
             page.clean()
             page.add(ft.Text(f"ERROR: {e}", color="red", size=20))
             page.update()
 
     # --- PANTALLA INICIO ---
-    btn_start = ft.ElevatedButton("ABRIR IMPERIO v64", bgcolor=COLOR_VERDE, color="black", weight="bold", height=50, on_click=iniciar_sistema)
+    btn_start = ft.ElevatedButton("ENTRAR v65", bgcolor=COLOR_ACENTO, color="black", weight="bold", height=50, width=200, on_click=iniciar_sistema)
     
     page.add(
         ft.Text("IMPERIO", size=40, color="black", weight="bold"),
-        ft.Text("Edición Segura", color="grey"),
+        ft.Text("Sistema Final v65", color="grey"),
         ft.Container(height=50),
         btn_start
     )
