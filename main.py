@@ -7,52 +7,142 @@ import os
 # --- COLORES "STEALTH" (Modo Oscuro de Lujo) ---
 COLOR_FONDO = "#000000"       # Negro puro
 COLOR_TARJETA = "#111111"     # Gris casi negro
-COLOR_TARJETA_BRN = "#1A1A1A" # Un poco más claro para contraste
 COLOR_ACENTO = "#00FF88"      # Verde Neón (Cyberpunk)
 COLOR_TEXTO = "#FFFFFF"
 
-# --- DATOS BLINDADOS ---
+# --- 100 FRASES DE PODER ---
 FRASES_MILLONARIAS = [
-    "Gana la mañana, gana el día.",
-    "La disciplina es libertad.",
-    "Tu futuro se crea hoy.",
-    "El dinero no duerme.",
+    "El dolor del sacrificio es temporal, la gloria es eterna.",
+    "No te detengas cuando estés cansado, detente cuando termines.",
+    "La disciplina es hacer lo que debes, aunque no quieras.",
+    "Tu competencia está entrenando mientras tú duermes.",
+    "Si fuera fácil, todo el mundo lo haría.",
+    "El éxito es la suma de pequeños esfuerzos diarios.",
     "No busques motivación, busca disciplina.",
-    "El éxito es la suma de pequeños esfuerzos.",
-    "Invierte en ti.",
+    "Tus excusas no le importan a tu cuenta bancaria.",
+    "Trabaja en silencio y deja que tu éxito haga el ruido.",
+    "O controlas tu día, o el día te controla a ti.",
+    "La pobreza mental se cura con acción masiva.",
+    "Si no arriesgas, te conformas con lo ordinario.",
+    "El dinero no duerme.",
+    "No bajes la meta, aumenta el esfuerzo.",
     "Hazlo con miedo, pero hazlo.",
+    "Tu futuro se crea por lo que haces hoy.",
     "Sé tan bueno que no puedan ignorarte.",
-    "Tu competencia está entrenando ahora."
+    "Si te ofrecen un cohete, ¡súbete!",
+    "El riesgo más grande es no tomar ninguno.",
+    "Invierte en ti, es la única inversión segura.",
+    "Obsesión es la palabra que los vagos usan para la dedicación.",
+    "Duerme tarde, levántate temprano y trabaja duro.",
+    "No necesitas suerte, necesitas moverte.",
+    "Sé el CEO de tu vida.",
+    "No pares hasta que tu firma sea un autógrafo.",
+    "Crea una vida de la que no necesites vacaciones.",
+    "El tiempo es oro, no lo regales.",
+    "Si no trabajas por tus sueños, trabajarás para otro.",
+    "Calidad sobre cantidad, siempre.",
+    "Gana la mañana, gana el día.",
+    "El fracaso es solo la oportunidad de comenzar de nuevo.",
+    "No cuentes los días, haz que los días cuenten.",
+    "La cima es solitaria, pero la vista es increíble.",
+    "Tu mente es tu activo más valioso.",
+    "El miedo es un mentiroso.",
+    "No esperes oportunidades, créalas.",
+    "El éxito ama la velocidad.",
+    "Mantén la visión, confía en el proceso.",
+    "Sé un lobo, no una oveja.",
+    "El confort es el enemigo del progreso.",
+    "Aprende a descansar, no a renunciar.",
+    "Tu red de contactos es tu patrimonio.",
+    "Haz más de lo que te pagan por hacer.",
+    "La suerte favorece a los valientes.",
+    "Sé adicto a mejorar.",
+    "Cierra la boca y abre tu mente.",
+    "El talento sin disciplina no vale nada.",
+    "Sé el trabajador más duro de la sala.",
+    "No persigas el dinero, persigue la excelencia.",
+    "Cada 'no' te acerca más a un 'sí'.",
+    "La paciencia paga dividendos.",
+    "Construye en silencio, sorprende al mundo.",
+    "No dejes para mañana lo que puedes facturar hoy.",
+    "Tu actitud determina tu altitud.",
+    "Sé implacable.",
+    "El único límite es tu mente.",
+    "Rodéate de gigantes.",
+    "No compitas, domina.",
+    "La mediocridad es una enfermedad.",
+    "Haz que suceda.",
+    "Sueña en grande, empieza pequeño, actúa ahora.",
+    "El éxito no es un accidente.",
+    "Sé un solucionador de problemas.",
+    "Vende el problema que resuelves.",
+    "La consistencia es la clave.",
+    "No te compares con nadie más que contigo mismo ayer.",
+    "El respeto se gana, no se pide.",
+    "Lidera con el ejemplo.",
+    "Sé humilde en la victoria.",
+    "Nunca es tarde para ser quien podrías haber sido.",
+    "El dinero es una herramienta, no un amo.",
+    "Libertad financiera es libertad real.",
+    "Deja un legado.",
+    "Vive como si fueras a morir mañana.",
+    "La acción cura el miedo.",
+    "Sé proactivo, no reactivo.",
+    "Enfócate en lo que puedes controlar.",
+    "La gratitud es riqueza.",
+    "Sal de tu zona de confort.",
+    "Rompe las reglas, no la ley.",
+    "Sé original.",
+    "Aporta valor masivo.",
+    "El cliente es el rey.",
+    "La marca personal es poder.",
+    "Automatiza, delega, elimina.",
+    "Piensa a largo plazo.",
+    "Cuida tu cuerpo, es tu único vehículo.",
+    "Lee, aprende, aplica.",
+    "Sé curioso.",
+    "La adaptabilidad es supervivencia.",
+    "Crea múltiples fuentes de ingresos.",
+    "El tiempo no perdona.",
+    "Sé dueño de tu destino.",
+    "Nunca te rindas."
 ]
 
+# --- 20 HÁBITOS IMPERIALES (Configuración v58: Texto + Color) ---
 HABITOS_CONFIG = {
     "⏰ Despertar 5:00 AM": "orange",
     "🛏️ Tender la cama": "grey",
     "💧 Tomar agua": "blue",
     "🚿 Ducha fría": "cyan",
-    "🧘 Meditación": "purple",
-    "📝 Planificar día": "yellow",
-    "🥗 Desayuno sano": "green",
+    "🧘 Meditación/Orar": "purple",
+    "📝 Planificar el día": "yellow",
+    "🥗 Desayuno nutritivo": "green",
     "📚 Leer 20 min": "amber",
-    "🏋️ Ejercicio": "red",
+    "🏃 Ejercicio Pesas": "red",
     "🎯 Objetivo Principal": "red",
-    "💻 Trabajo Profundo": "yellow",
-    "📢 Ads / Marketing": "pink",
+    "🔍 Investigar Productos": "purple",
+    "📢 Revisar Ads": "pink",
+    "🧠 Aprender IA": "teal",
+    "⚡ Trabajo Profundo": "yellow",
     "🤝 Networking": "blue",
-    "💰 Revisar Finanzas": "green",
+    "📊 Revisar Finanzas": "green",
+    "📱 Crear Contenido": "pink",
+    "🚫 Cero Azúcar": "brown",
+    "💡 Reflexión": "yellow",
     "😴 Dormir Temprano": "indigo",
 }
 
 def main(page: ft.Page):
-    # --- ARRANQUE SEGURO (Mismo de v62) ---
-    page.title = "Imperio v65"
+    # --- ARRANQUE SEGURO (Motor v58) ---
+    page.title = "Imperio v66"
     page.bgcolor = "white"
-    page.padding = 0
-    # Strings simples para evitar errores de atributos
-    page.vertical_alignment = "center" 
+    page.padding = 20
+    # Usamos constantes seguras (Strings)
+    page.vertical_alignment = "center"
     page.horizontal_alignment = "center"
-    
-    CENTRO_MAT = ft.Alignment(0,0)
+
+    # Constante matemática para centrar sin errores
+    CENTRO_MATEMATICO = ft.Alignment(0, 0)
 
     # --- BASE DE DATOS ---
     def cargar_db():
@@ -70,52 +160,46 @@ def main(page: ft.Page):
     # --- SISTEMA PRINCIPAL ---
     def iniciar_sistema(e):
         try:
-            # 1. Configuración Visual
+            # 1. Limpieza y Modo Oscuro Profundo
             page.clean()
             page.bgcolor = COLOR_FONDO
-            page.padding = 15
             page.vertical_alignment = "start"
+            page.padding = 10
             
             # 2. Datos
             db = cargar_db()
             hoy_str = datetime.date.today().strftime("%Y-%m-%d")
             if hoy_str not in db: db[hoy_str] = {}
 
-            # Contenedor con Scroll (Igual que v62)
-            # Usamos una columna simple, sin "layouts" complejos
-            contenido = ft.Column(expand=True, scroll="auto")
-            
-            # Espacio Notch
-            contenido.controls.append(ft.Container(height=35))
+            # Área de contenido con Scroll simple (v58 style)
+            area_contenido = ft.Column(expand=True, scroll="auto")
 
-            # --- VISTA 1: RUTINA (Estilo Tarjeta Negra) ---
+            # Espacio Notch (La única mejora estructural permitida)
+            area_contenido.controls.append(ft.Container(height=35))
+
+            # --- VISTA 1: RUTINA (Estilo v58 pero con colores Premium) ---
             def ver_rutina(e=None):
-                contenido.controls.clear()
-                contenido.controls.append(ft.Container(height=35))
+                area_contenido.controls.clear()
+                area_contenido.controls.append(ft.Container(height=35))
                 
-                # Header Simple y Seguro
                 completados = sum(1 for h in HABITOS_CONFIG if db.get(hoy_str, {}).get(h, False))
                 total = len(HABITOS_CONFIG)
-                pct = int((completados / total) * 100) if total > 0 else 0
+                porcentaje = int((completados / total) * 100) if total > 0 else 0
                 
-                contenido.controls.append(
+                # Encabezado (Texto Gigante en vez de gráficos complejos)
+                area_contenido.controls.append(
                     ft.Container(
                         content=ft.Column([
-                            ft.Text("MI PROGRESO", size=12, color="grey"),
-                            ft.Text(f"{pct}%", size=50, weight="bold", color=COLOR_ACENTO),
-                            ft.Text("OBJETIVO DIARIO", size=12, color="white")
+                            ft.Text("MI IMPERIO", size=15, color="grey", weight="bold"),
+                            ft.Text(f"{porcentaje}%", size=60, weight="bold", color=COLOR_ACENTO),
+                            ft.Text("OBJETIVO DIARIO", size=15, color="white"),
                         ], horizontal_alignment="center"),
-                        padding=20,
-                        alignment=CENTRO_MAT,
-                        bgcolor=COLOR_TARJETA,
-                        border_radius=15,
-                        border=ft.border.all(1, "#333333") # Borde fino elegante
+                        alignment=CENTRO_MATEMATICO,
+                        padding=20
                     )
                 )
-                
-                contenido.controls.append(ft.Container(height=20))
 
-                # Lista de Hábitos
+                # Lista de Hábitos (Estructura v58 Indestructible)
                 for nombre, color_code in HABITOS_CONFIG.items():
                     estado = db.get(hoy_str, {}).get(nombre, False)
                     
@@ -124,127 +208,103 @@ def main(page: ft.Page):
                         guardar_db(db)
                         ver_rutina()
 
-                    # Tarjeta Hábito (Misma estructura v62, mejor color)
-                    contenido.controls.append(
+                    chk = ft.Checkbox(value=estado, active_color=COLOR_ACENTO, fill_color=color_code, on_change=cambiar)
+                    
+                    # Usamos el contenedor v58 pero con fondo más oscuro para contraste
+                    area_contenido.controls.append(
                         ft.Container(
                             content=ft.Row([
-                                # Indicador de color pequeño
-                                ft.Container(width=5, height=25, bgcolor=color_code, border_radius=2),
-                                ft.Text(nombre, size=15, color="white", weight="bold", expand=True),
-                                ft.Checkbox(value=estado, active_color=COLOR_ACENTO, check_color="black", on_change=cambiar)
+                                ft.Container(width=5, height=30, bgcolor=color_code), # Barra lateral fina
+                                ft.Text(nombre, color="white", size=15, weight="bold", expand=True),
+                                chk
                             ]),
-                            bgcolor=COLOR_TARJETA_BRN,
-                            padding=15,
-                            border_radius=8,
-                            margin=ft.margin.only(bottom=8)
+                            bgcolor=COLOR_TARJETA, padding=15, border_radius=8, margin=3
                         )
                     )
                 page.update()
 
-            # --- VISTA 2: HISTORIAL (Lista Vertical Estilizada) ---
-            # Volvemos a la lista vertical (que funcionó), pero la hacemos bonita
+            # --- VISTA 2: HISTORIAL (Lista Vertical v58) ---
             def ver_calendario(e=None):
-                contenido.controls.clear()
-                contenido.controls.append(ft.Container(height=35))
+                area_contenido.controls.clear()
+                area_contenido.controls.append(ft.Container(height=35))
                 
-                contenido.controls.append(ft.Text("HISTORIAL RECIENTE", size=20, weight="bold", color="white"))
-                contenido.controls.append(ft.Container(height=10))
-
+                area_contenido.controls.append(ft.Text("HISTORIAL DE BATALLA", size=20, color="white", weight="bold"))
+                area_contenido.controls.append(ft.Divider(color="white24"))
+                
                 for i in range(7):
                     fecha = datetime.date.today() - datetime.timedelta(days=i)
                     f_str = fecha.strftime("%Y-%m-%d")
-                    dia_letra = fecha.strftime("%A") # Nombre del día
-                    
                     datos = db.get(f_str, {})
                     hechos = sum(1 for h in HABITOS_CONFIG if datos.get(h, False))
-                    total = len(HABITOS_CONFIG)
-                    ratio = hechos / total if total > 0 else 0
+                    pct = int((hechos / len(HABITOS_CONFIG)) * 100)
                     
-                    # Colores dinámicos
-                    color_pct = COLOR_ACENTO if ratio > 0.8 else "grey"
-                    color_borde = COLOR_ACENTO if ratio > 0.8 else "#333333"
-
-                    # Tarjeta de Día (Vertical, seguro)
-                    contenido.controls.append(
+                    color_pct = COLOR_ACENTO if pct > 80 else "grey"
+                    
+                    area_contenido.controls.append(
                         ft.Container(
                             content=ft.Row([
-                                ft.Column([
-                                    ft.Text(f_str, color="white", weight="bold", size=16),
-                                    ft.Text("Registro diario", color="grey", size=12)
-                                ]),
+                                ft.Text(f_str, color="white", weight="bold"),
                                 ft.Container(expand=True),
-                                ft.Container(
-                                    content=ft.Text(f"{int(ratio*100)}%", color="black", weight="bold"),
-                                    bgcolor=color_pct,
-                                    padding=10,
-                                    border_radius=8
-                                )
+                                ft.Text(f"{pct}%", color=color_pct, weight="bold", size=18)
                             ]),
-                            bgcolor=COLOR_TARJETA,
-                            padding=15,
-                            border_radius=10,
-                            margin=ft.margin.only(bottom=10),
-                            border=ft.border.all(1, color_borde)
+                            bgcolor=COLOR_TARJETA, padding=20, margin=3, border_radius=8
                         )
                     )
                 page.update()
 
-            # --- VISTA 3: MENTOR ---
+            # --- VISTA 3: MENTOR (Texto Grande) ---
             def ver_frases(e=None):
-                contenido.controls.clear()
-                contenido.controls.append(ft.Container(height=35))
+                area_contenido.controls.clear()
+                area_contenido.controls.append(ft.Container(height=35))
                 
                 frase = random.choice(FRASES_MILLONARIAS)
                 
-                contenido.controls.append(
+                area_contenido.controls.append(
                     ft.Column([
-                        ft.Container(height=40),
-                        ft.Text("MENTALIDAD", size=14, color="grey", weight="bold"),
-                        
+                        ft.Container(height=20),
+                        ft.Text("MENTALIDAD", size=20, color="grey", weight="bold"),
                         ft.Container(
-                            content=ft.Text(f'"{frase}"', size=20, color="white", italic=True, text_align="center"),
-                            bgcolor=COLOR_TARJETA,
-                            padding=40,
-                            border_radius=15,
-                            margin=20,
-                            alignment=CENTRO_MAT,
-                            border=ft.border.all(1, COLOR_ACENTO)
+                            content=ft.Text(frase, size=22, color="white", italic=True, text_align="center"),
+                            bgcolor=COLOR_TARJETA, padding=40, border_radius=15, margin=20, alignment=CENTRO_MATEMATICO
                         ),
-                        
-                        ft.ElevatedButton("OTRA FRASE", on_click=ver_frases, bgcolor=COLOR_ACENTO, color="black")
+                        ft.ElevatedButton("NUEVA FRASE", on_click=ver_frases, bgcolor=COLOR_ACENTO, color="black")
                     ], horizontal_alignment="center")
                 )
                 page.update()
 
-            # --- MENÚ DE NAVEGACIÓN (Botones Simples v62) ---
-            # Mantenemos los botones simples pero con colores oscuros
-            menu = ft.Container(
-                content=ft.Row([
-                    ft.ElevatedButton("RUTINA", on_click=ver_rutina, bgcolor=COLOR_TARJETA, color="white", expand=True),
-                    ft.ElevatedButton("HISTORIAL", on_click=ver_calendario, bgcolor=COLOR_TARJETA, color="white", expand=True),
-                    ft.ElevatedButton("MENTOR", on_click=ver_frases, bgcolor=COLOR_TARJETA, color="white", expand=True),
-                ], spacing=10),
-                bgcolor="black",
-                padding=10
+            # --- NAVEGACIÓN (Botones v58 pero Negros) ---
+            menu_botones = ft.Row(
+                [
+                    ft.ElevatedButton("RUTINA", on_click=ver_rutina, bgcolor="#222222", color="white", expand=True),
+                    ft.ElevatedButton("HISTORIAL", on_click=ver_calendario, bgcolor="#222222", color="white", expand=True),
+                    ft.ElevatedButton("MENTOR", on_click=ver_frases, bgcolor="#222222", color="white", expand=True),
+                ],
+                alignment="spaceEvenly"
             )
 
-            # Ensamblaje
-            page.add(ft.Column([contenido, menu], expand=True, spacing=0))
+            # --- ENSAMBLAJE FINAL ---
+            page.add(
+                ft.Column([
+                    area_contenido,
+                    ft.Container(content=menu_botones, padding=10, bgcolor="black")
+                ], expand=True)
+            )
+
             ver_rutina()
 
-        except Exception as e:
+        except Exception as error_carga:
             page.bgcolor = "black"
             page.clean()
-            page.add(ft.Text(f"ERROR: {e}", color="red", size=20))
+            page.add(ft.Text(f"ERROR: {error_carga}", color="red", size=20))
             page.update()
 
     # --- PANTALLA INICIO ---
-    btn_start = ft.ElevatedButton("ENTRAR v65", bgcolor=COLOR_ACENTO, color="black", weight="bold", height=50, width=200, on_click=iniciar_sistema)
+    btn_start = ft.ElevatedButton("ENTRAR AL IMPERIO", bgcolor=COLOR_ACENTO, color="black", weight="bold", on_click=iniciar_sistema)
     
     page.add(
-        ft.Text("IMPERIO", size=40, color="black", weight="bold"),
-        ft.Text("Sistema Final v65", color="grey"),
-        ft.Container(height=50),
+        ft.Text("¡HOLA LEO!", size=30, color="black", weight="bold"),
+        ft.Text("Versión v66 (Base v58)", color="grey"),
+        ft.Container(height=20),
         btn_start
     )
 
