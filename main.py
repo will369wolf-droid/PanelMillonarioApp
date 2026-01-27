@@ -4,142 +4,57 @@ import random
 import json
 import os
 
-# --- CONFIGURACIÓN ---
+# --- COLORES PREMIUM ---
 COLOR_FONDO = "#121212"
-COLOR_TARJETA = "#1E1E1E"
-COLOR_ACENTO = "#00d26a"
+COLOR_TARJETA = "#1E1E1E" 
+COLOR_TEXTO = "#FFFFFF"
+COLOR_VERDE = "#00d26a" # Éxito
+COLOR_ROJO = "#f44336"  # Fallo
+COLOR_GRIS = "#424242"  # Neutro
 
-# --- DATOS (ARSENAL COMPLETO) ---
+# --- DATOS ---
 FRASES_MILLONARIAS = [
-    "El dolor del sacrificio es temporal, la gloria es eterna.",
-    "No te detengas cuando estés cansado, detente cuando termines.",
-    "La disciplina es hacer lo que debes, aunque no quieras.",
-    "Tu competencia está entrenando mientras tú duermes.",
-    "Si fuera fácil, todo el mundo lo haría.",
-    "El éxito es la suma de pequeños esfuerzos diarios.",
-    "No busques motivación, busca disciplina.",
-    "Tus excusas no le importan a tu cuenta bancaria.",
-    "Trabaja en silencio y deja que tu éxito haga el ruido.",
-    "O controlas tu día, o el día te controla a ti.",
-    "La pobreza mental se cura con acción masiva.",
-    "Si no arriesgas, te conformas con lo ordinario.",
-    "El dinero no duerme.",
-    "No bajes la meta, aumenta el esfuerzo.",
-    "Hazlo con miedo, pero hazlo.",
-    "Tu futuro se crea por lo que haces hoy.",
-    "Sé tan bueno que no puedan ignorarte.",
-    "Si te ofrecen un cohete, ¡súbete!",
-    "El riesgo más grande es no tomar ninguno.",
-    "Invierte en ti, es la única inversión segura.",
-    "Obsesión es la palabra que los vagos usan para la dedicación.",
-    "Duerme tarde, levántate temprano y trabaja duro.",
-    "No necesitas suerte, necesitas moverte.",
-    "Sé el CEO de tu vida.",
-    "No pares hasta que tu firma sea un autógrafo.",
-    "Crea una vida de la que no necesites vacaciones.",
-    "El tiempo es oro, no lo regales.",
-    "Si no trabajas por tus sueños, trabajarás para otro.",
-    "Calidad sobre cantidad, siempre.",
     "Gana la mañana, gana el día.",
-    "El fracaso es solo la oportunidad de comenzar de nuevo.",
-    "No cuentes los días, haz que los días cuenten.",
-    "Tu mente es tu activo más valioso.",
-    "El miedo es un mentiroso.",
-    "No esperes oportunidades, créalas.",
+    "Tu competencia está entrenando ahora.",
+    "La disciplina es libertad.",
+    "El dolor es temporal, la gloria es eterna.",
+    "No te detengas cuando estés cansado, detente cuando termines.",
+    "Si fuera fácil, todos lo harían.",
+    "Tu cuenta bancaria refleja tus hábitos.",
+    "Cierra la boca y trabaja.",
     "El éxito ama la velocidad.",
-    "Mantén la visión, confía en el proceso.",
-    "Sé un lobo, no una oveja.",
-    "El confort es el enemigo del progreso.",
-    "Aprende a descansar, no a renunciar.",
-    "Tu red de contactos es tu patrimonio.",
-    "Haz más de lo que te pagan por hacer.",
-    "La suerte favorece a los valientes.",
-    "Sé adicto a mejorar.",
-    "Cierra la boca y abre tu mente.",
-    "El talento sin disciplina no vale nada.",
-    "Sé el trabajador más duro de la sala.",
-    "No persigas el dinero, persigue la excelencia.",
-    "Cada 'no' te acerca más a un 'sí'.",
-    "La paciencia paga dividendos.",
-    "Construye en silencio, sorprende al mundo.",
-    "No dejes para mañana lo que puedes facturar hoy.",
-    "Tu actitud determina tu altitud.",
-    "Sé implacable.",
-    "El único límite es tu mente.",
-    "Rodéate de gigantes.",
-    "No compitas, domina.",
-    "La mediocridad es una enfermedad.",
-    "Haz que suceda.",
-    "Sueña en grande, empieza pequeño, actúa ahora.",
-    "El éxito no es un accidente.",
-    "Sé un solucionador de problemas.",
-    "Vende el problema que resuelves.",
-    "La consistencia es la clave.",
-    "No te compares con nadie más que contigo mismo ayer.",
-    "El respeto se gana, no se pide.",
-    "Lidera con el ejemplo.",
-    "Nunca es tarde para ser quien podrías haber sido.",
-    "El dinero es una herramienta, no un amo.",
-    "Libertad financiera es libertad real.",
-    "Deja un legado.",
-    "Vive como si fueras a morir mañana.",
-    "La acción cura el miedo.",
-    "Sé proactivo, no reactivo.",
-    "Enfócate en lo que puedes controlar.",
-    "La gratitud es riqueza.",
-    "Sal de tu zona de confort.",
-    "Rompe las reglas, no la ley.",
-    "Sé original.",
-    "Aporta valor masivo.",
-    "El cliente es el rey.",
-    "La marca personal es poder.",
-    "Automatiza, delega, elimina.",
-    "Piensa a largo plazo.",
-    "Cuida tu cuerpo, es tu único vehículo.",
-    "Lee, aprende, aplica.",
-    "Sé curioso.",
-    "La adaptabilidad es supervivencia.",
-    "Crea múltiples fuentes de ingresos.",
-    "El tiempo no perdona.",
-    "Sé dueño de tu destino.",
-    "Nunca te rindas."
+    "Sé el CEO de tu propia vida."
 ]
 
-# Usamos EMOJIS DIRECTOS (Texto) en lugar de códigos de iconos
 HABITOS_CONFIG = {
     "⏰ Despertar 5:00 AM": "orange",
     "🛏️ Tender la cama": "grey",
     "💧 Tomar agua": "blue",
     "🚿 Ducha fría": "cyan",
-    "🧘 Meditación/Orar": "purple",
-    "📝 Planificar el día": "yellow",
-    "🥗 Desayuno nutritivo": "green",
+    "🧘 Meditación": "purple",
+    "📝 Planificar día": "yellow",
+    "🥗 Desayuno sano": "green",
     "📚 Leer 20 min": "amber",
-    "🏃 Ejercicio Pesas": "red",
+    "🏋️ Ejercicio": "red",
     "🎯 Objetivo Principal": "red",
-    "🔍 Investigar Productos": "purple",
-    "📢 Revisar Ads": "pink",
-    "🧠 Aprender IA": "teal",
-    "⚡ Trabajo Profundo": "yellow",
+    "💻 Trabajo Profundo": "yellow",
+    "📢 Ads / Marketing": "pink",
     "🤝 Networking": "blue",
-    "📊 Revisar Finanzas": "green",
-    "📱 Crear Contenido": "pink",
-    "🚫 Cero Azúcar": "brown",
-    "💡 Reflexión": "yellow",
+    "💰 Revisar Finanzas": "green",
     "😴 Dormir Temprano": "indigo",
 }
 
 def main(page: ft.Page):
-    # --- ARRANQUE SEGURO (Igual que v58) ---
-    page.title = "Panel Imperio"
+    # --- CONFIGURACIÓN SEGURA ---
+    page.title = "Imperio Premium"
     page.bgcolor = "white"
-    page.padding = 20
-    # Usamos strings simples que v58 aceptó
+    page.padding = 0
+    # Alineación segura (strings)
     page.vertical_alignment = "center"
     page.horizontal_alignment = "center"
-
-    # Constante segura
-    CENTRO_MATEMATICO = ft.Alignment(0, 0)
+    
+    # Constante matemática para centrar
+    CENTRO = ft.Alignment(0,0)
 
     # --- BASE DE DATOS ---
     def cargar_db():
@@ -154,51 +69,46 @@ def main(page: ft.Page):
             with open("imperio_data.json", "w") as f: json.dump(db, f)
         except: pass
 
-    # --- SISTEMA PRINCIPAL ---
+    # --- SISTEMA ---
     def iniciar_sistema(e):
         try:
-            # 1. Limpieza (Igual que v58)
             page.clean()
             page.bgcolor = COLOR_FONDO
+            page.padding = 0 # Sin padding global para que el menú toque el borde
             page.vertical_alignment = "start"
-            page.padding = 10
             
-            # 2. Datos
             db = cargar_db()
             hoy_str = datetime.date.today().strftime("%Y-%m-%d")
             if hoy_str not in db: db[hoy_str] = {}
 
-            # Área de contenido (Igual que v58, pero con 'scroll="auto"')
-            area_contenido = ft.Column(expand=True, scroll="auto")
+            # Contenedor Principal (Con espacio para Notch)
+            contenido = ft.Column(expand=True, scroll="auto")
+            contenido.controls.append(ft.Container(height=40)) # Espacio Notch
 
-            # --- CORRECCIÓN NOTCH (Agregado simple) ---
-            # Un espacio vacío al principio para que no se tape el texto
-            area_contenido.controls.append(ft.Container(height=35))
-
-            # --- VISTA 1: RUTINA ---
+            # --- VISTA 1: RUTINA (Limpia) ---
             def ver_rutina(e=None):
-                # Limpiamos pero mantenemos el espacio del notch
-                area_contenido.controls.clear()
-                area_contenido.controls.append(ft.Container(height=35))
+                contenido.controls.clear()
+                contenido.controls.append(ft.Container(height=40)) # Notch
                 
+                # Header Premium
                 completados = sum(1 for h in HABITOS_CONFIG if db.get(hoy_str, {}).get(h, False))
                 total = len(HABITOS_CONFIG)
-                porcentaje = int((completados / total) * 100) if total > 0 else 0
+                pct = int((completados / total) * 100) if total > 0 else 0
                 
-                # Encabezado (Estilo v58 seguro)
-                area_contenido.controls.append(
+                contenido.controls.append(
                     ft.Container(
                         content=ft.Column([
-                            ft.Text("MI IMPERIO", size=20, weight="bold", color="white"),
-                            ft.Text(f"{porcentaje}% COMPLETADO", size=30, weight="bold", color=COLOR_ACENTO),
-                        ], horizontal_alignment="center"),
-                        alignment=CENTRO_MATEMATICO,
-                        padding=20
+                            ft.Text("MI OBJETIVO DE HOY", size=12, color="grey", weight="bold"),
+                            ft.Text(f"{pct}%", size=60, weight="bold", color=COLOR_VERDE),
+                            ft.ProgressBar(value=pct/100, color=COLOR_VERDE, bgcolor="#333333", height=5)
+                        ], horizontal_alignment="center", spacing=5),
+                        padding=20,
+                        alignment=CENTRO
                     )
                 )
 
-                # Lista de Hábitos
-                for nombre, color_code in HABITOS_CONFIG.items():
+                # Lista Estilizada
+                for nombre, col in HABITOS_CONFIG.items():
                     estado = db.get(hoy_str, {}).get(nombre, False)
                     
                     def cambiar(e, n=nombre):
@@ -206,107 +116,159 @@ def main(page: ft.Page):
                         guardar_db(db)
                         ver_rutina()
 
-                    chk = ft.Checkbox(value=estado, active_color=COLOR_ACENTO, fill_color=color_code, on_change=cambiar)
-                    
-                    area_contenido.controls.append(
+                    # Tarjeta limpia (Sin cuadrado de color extra)
+                    contenido.controls.append(
                         ft.Container(
                             content=ft.Row([
-                                # Cuadrado de color simple (Indestructible)
-                                ft.Container(width=10, height=10, bgcolor=color_code),
-                                # El emoji viene pegado en el nombre, así que se verá bien
-                                ft.Text(nombre, color="white", size=14, expand=True),
-                                chk
-                            ]),
-                            bgcolor=COLOR_TARJETA, padding=10, border_radius=5, margin=2
+                                ft.Text(nombre, size=16, color="white", weight="bold", expand=True),
+                                ft.Checkbox(value=estado, active_color=COLOR_VERDE, check_color="black", on_change=cambiar)
+                            ], alignment="spaceBetween"),
+                            bgcolor=COLOR_TARJETA,
+                            padding=15,
+                            border_radius=12,
+                            margin=ft.margin.only(left=15, right=15, bottom=8)
                         )
                     )
+                
+                contenido.controls.append(ft.Container(height=20))
                 page.update()
 
-            # --- VISTA 2: CALENDARIO ---
+            # --- VISTA 2: RACHA (Burbujas Visuales) ---
             def ver_calendario(e=None):
-                area_contenido.controls.clear()
-                area_contenido.controls.append(ft.Container(height=35)) # Notch
+                contenido.controls.clear()
+                contenido.controls.append(ft.Container(height=40)) # Notch
                 
-                area_contenido.controls.append(ft.Text("HISTORIAL 7 DÍAS", size=20, color="white", weight="bold"))
-                area_contenido.controls.append(ft.Divider(color="white24"))
+                contenido.controls.append(
+                    ft.Container(
+                        content=ft.Text("MI RACHA SEMANAL", size=20, weight="bold", color="white"),
+                        padding=ft.padding.only(left=20, bottom=20)
+                    )
+                )
+
+                # Fila de Burbujas
+                fila_burbujas = ft.Row(alignment="center", spacing=10)
                 
-                for i in range(7):
+                # Últimos 7 días (Del más antiguo al nuevo -> izq a der)
+                # O del nuevo al antiguo? Vamos a poner HOY a la derecha (estilo racha)
+                for i in range(6, -1, -1):
                     fecha = datetime.date.today() - datetime.timedelta(days=i)
                     f_str = fecha.strftime("%Y-%m-%d")
+                    dia_letra = fecha.strftime("%a")[0].upper() # L, M, M...
+                    
                     datos = db.get(f_str, {})
                     hechos = sum(1 for h in HABITOS_CONFIG if datos.get(h, False))
-                    pct = int((hechos / len(HABITOS_CONFIG)) * 100)
+                    total = len(HABITOS_CONFIG)
+                    ratio = hechos / total if total > 0 else 0
                     
-                    color_pct = COLOR_ACENTO if pct > 80 else "grey"
+                    # Color de la burbuja
+                    if ratio >= 0.8: color_burbuja = COLOR_VERDE
+                    elif ratio >= 0.4: color_burbuja = "orange"
+                    else: color_burbuja = COLOR_GRIS
                     
-                    area_contenido.controls.append(
+                    # Burbuja (Container Redondo)
+                    burbuja = ft.Column([
                         ft.Container(
-                            content=ft.Row([
-                                ft.Text(f_str, color="white"),
-                                ft.Container(expand=True),
-                                ft.Text(f"{pct}%", color=color_pct, weight="bold")
-                            ]),
-                            bgcolor=COLOR_TARJETA, padding=15, margin=2, border_radius=5
-                        )
+                            width=35, height=35,
+                            bgcolor=color_burbuja,
+                            border_radius=35, # Esto lo hace redondo
+                            alignment=CENTRO,
+                            content=ft.Text(str(fecha.day), size=12, weight="bold", color="black" if ratio > 0.3 else "white")
+                        ),
+                        ft.Text(dia_letra, size=10, color="grey")
+                    ], spacing=5, horizontal_alignment="center")
+                    
+                    fila_burbujas.controls.append(burbuja)
+
+                # Tarjeta contenedora
+                contenido.controls.append(
+                    ft.Container(
+                        content=fila_burbujas,
+                        bgcolor=COLOR_TARJETA,
+                        padding=20,
+                        border_radius=15,
+                        margin=20
                     )
+                )
+                
+                # Stats Extra
+                dias_perfectos = sum(1 for d in db.values() if sum(1 for h in HABITOS_CONFIG if d.get(h)) == len(HABITOS_CONFIG))
+                
+                contenido.controls.append(
+                    ft.Container(
+                        content=ft.Column([
+                            ft.Text("ESTADÍSTICAS TOTALES", size=12, color="grey"),
+                            ft.Text(f"{dias_perfectos} DÍAS PERFECTOS", size=20, weight="bold", color="white")
+                        ]),
+                        padding=20, margin=20, bgcolor=COLOR_TARJETA, border_radius=15
+                    )
+                )
+
                 page.update()
 
-            # --- VISTA 3: MENTOR ---
+            # --- VISTA 3: MENTOR (Elegante) ---
             def ver_frases(e=None):
-                area_contenido.controls.clear()
-                area_contenido.controls.append(ft.Container(height=35)) # Notch
+                contenido.controls.clear()
+                contenido.controls.append(ft.Container(height=40)) # Notch
                 
                 frase = random.choice(FRASES_MILLONARIAS)
                 
-                area_contenido.controls.append(
+                contenido.controls.append(
                     ft.Column([
-                        ft.Container(height=20),
-                        ft.Text("MENTALIDAD", size=20, color="white", weight="bold"),
+                        ft.Container(height=40),
+                        ft.Text("MENTALIDAD", size=14, color="grey", letter_spacing=2),
+                        
                         ft.Container(
-                            content=ft.Text(frase, size=18, color="white", italic=True, text_align="center"),
-                            bgcolor=COLOR_TARJETA, padding=30, border_radius=10, margin=20, alignment=CENTRO_MATEMATICO
+                            content=ft.Text(f'"{frase}"', size=24, color="white", italic=True, text_align="center"),
+                            padding=40,
+                            margin=20,
+                            alignment=CENTRO
                         ),
-                        ft.ElevatedButton("NUEVA FRASE", on_click=ver_frases, bgcolor=COLOR_ACENTO, color="white")
+                        
+                        ft.ElevatedButton(
+                            "NUEVA IDEA", 
+                            on_click=ver_frases, 
+                            bgcolor="#333333", 
+                            color="white",
+                            height=50,
+                            width=200
+                        )
                     ], horizontal_alignment="center")
                 )
                 page.update()
 
-            # --- NAVEGACIÓN (Estilo v58 - Botones de colores) ---
-            # Esto NO falla nunca.
-            menu_botones = ft.Row(
-                [
-                    ft.ElevatedButton("RUTINA", on_click=ver_rutina, bgcolor="blue", color="white", expand=True),
-                    ft.ElevatedButton("HISTORIAL", on_click=ver_calendario, bgcolor="grey", color="white", expand=True),
-                    ft.ElevatedButton("MENTOR", on_click=ver_frases, bgcolor="orange", color="white", expand=True),
-                ],
-                alignment="spaceEvenly"
+            # --- MENÚ INFERIOR (Estilo App Nativa) ---
+            # Usamos botones negros simples pero elegantes
+            menu = ft.Container(
+                content=ft.Row([
+                    ft.ElevatedButton("RUTINA", on_click=ver_rutina, bgcolor=COLOR_FONDO, color="grey", elevation=0),
+                    ft.ElevatedButton("RACHA", on_click=ver_calendario, bgcolor=COLOR_FONDO, color="grey", elevation=0),
+                    ft.ElevatedButton("MENTOR", on_click=ver_frases, bgcolor=COLOR_FONDO, color="grey", elevation=0),
+                ], alignment="spaceEvenly"),
+                bgcolor="#000000",
+                padding=10,
+                border=ft.border.only(top=ft.border.BorderSide(1, "#333333"))
             )
 
-            # --- ENSAMBLAJE FINAL ---
-            page.add(
-                ft.Column([
-                    area_contenido,
-                    ft.Container(content=menu_botones, padding=5, bgcolor="black")
-                ], expand=True)
-            )
-
+            # Ensamblaje
+            page.add(ft.Column([contenido, menu], expand=True, spacing=0))
             ver_rutina()
 
-        except Exception as error_carga:
-            # Manejo de error seguro
+        except Exception as e:
             page.bgcolor = "black"
             page.clean()
-            page.add(ft.Text(f"ERROR: {error_carga}", color="red", size=20))
+            page.add(ft.Text(f"ERROR: {e}", color="red"))
             page.update()
 
     # --- PANTALLA INICIO ---
-    btn_start = ft.ElevatedButton("ENTRAR v62", bgcolor="black", color="white", on_click=iniciar_sistema)
+    btn_start = ft.ElevatedButton("ABRIR IMPERIO", bgcolor=COLOR_VERDE, color="black", weight="bold", height=50, width=200, on_click=iniciar_sistema)
     
     page.add(
-        ft.Text("¡HOLA LEO!", size=30, color="black", weight="bold"),
-        ft.Text("Versión Final Segura", color="grey"),
-        ft.Container(height=20),
-        btn_start
+        ft.Column([
+            ft.Text("IMPERIO", size=40, color="black", weight="bold"),
+            ft.Text("Edición Premium v63", color="grey"),
+            ft.Container(height=50),
+            btn_start
+        ], alignment="center", horizontal_alignment="center", expand=True)
     )
 
 ft.app(target=main)
