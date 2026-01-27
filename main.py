@@ -4,12 +4,12 @@ import random
 import json
 import os
 
-# --- CONFIGURACIÓN ESTÉTICA ---
+# --- CONFIGURACIÓN ---
 COLOR_FONDO = "#121212"
 COLOR_TARJETA = "#1E1E1E"
-COLOR_ACENTO = "#00d26a" # Verde Éxito
+COLOR_ACENTO = "#00d26a"
 
-# --- 100 FRASES DE PODER (Base de Datos) ---
+# --- DATOS (ARSENAL COMPLETO) ---
 FRASES_MILLONARIAS = [
     "El dolor del sacrificio es temporal, la gloria es eterna.",
     "No te detengas cuando estés cansado, detente cuando termines.",
@@ -41,9 +41,8 @@ FRASES_MILLONARIAS = [
     "Si no trabajas por tus sueños, trabajarás para otro.",
     "Calidad sobre cantidad, siempre.",
     "Gana la mañana, gana el día.",
-    "El fracaso es solo la oportunidad de comenzar de nuevo con más inteligencia.",
+    "El fracaso es solo la oportunidad de comenzar de nuevo.",
     "No cuentes los días, haz que los días cuenten.",
-    "La cima es solitaria, pero la vista es increíble.",
     "Tu mente es tu activo más valioso.",
     "El miedo es un mentiroso.",
     "No esperes oportunidades, créalas.",
@@ -69,22 +68,21 @@ FRASES_MILLONARIAS = [
     "El único límite es tu mente.",
     "Rodéate de gigantes.",
     "No compitas, domina.",
-    "La mediocridad es una enfermedad, la ambición es la cura.",
+    "La mediocridad es una enfermedad.",
     "Haz que suceda.",
     "Sueña en grande, empieza pequeño, actúa ahora.",
     "El éxito no es un accidente.",
     "Sé un solucionador de problemas.",
-    "Vende el problema que resuelves, no el producto.",
+    "Vende el problema que resuelves.",
     "La consistencia es la clave.",
     "No te compares con nadie más que contigo mismo ayer.",
     "El respeto se gana, no se pide.",
     "Lidera con el ejemplo.",
-    "Sé humilde en la victoria, fuerte en la derrota.",
     "Nunca es tarde para ser quien podrías haber sido.",
     "El dinero es una herramienta, no un amo.",
     "Libertad financiera es libertad real.",
     "Deja un legado.",
-    "Vive como si fueras a morir mañana, aprende como si fueras a vivir siempre.",
+    "Vive como si fueras a morir mañana.",
     "La acción cura el miedo.",
     "Sé proactivo, no reactivo.",
     "Enfócate en lo que puedes controlar.",
@@ -107,7 +105,7 @@ FRASES_MILLONARIAS = [
     "Nunca te rindas."
 ]
 
-# --- 20 HÁBITOS IMPERIALES (Con Emojis Seguros) ---
+# Usamos EMOJIS DIRECTOS (Texto) en lugar de códigos de iconos
 HABITOS_CONFIG = {
     "⏰ Despertar 5:00 AM": "orange",
     "🛏️ Tender la cama": "grey",
@@ -132,13 +130,16 @@ HABITOS_CONFIG = {
 }
 
 def main(page: ft.Page):
-    # --- ARRANQUE SEGURO ---
-    page.title = "Imperio Final v61"
+    # --- ARRANQUE SEGURO (Igual que v58) ---
+    page.title = "Panel Imperio"
     page.bgcolor = "white"
-    page.padding = 0
-    
-    # Coordenada matemática segura (reemplaza a alignment.center)
-    CENTRO = ft.Alignment(0,0)
+    page.padding = 20
+    # Usamos strings simples que v58 aceptó
+    page.vertical_alignment = "center"
+    page.horizontal_alignment = "center"
+
+    # Constante segura
+    CENTRO_MATEMATICO = ft.Alignment(0, 0)
 
     # --- BASE DE DATOS ---
     def cargar_db():
@@ -156,9 +157,10 @@ def main(page: ft.Page):
     # --- SISTEMA PRINCIPAL ---
     def iniciar_sistema(e):
         try:
-            # 1. Configuración Visual
+            # 1. Limpieza (Igual que v58)
             page.clean()
             page.bgcolor = COLOR_FONDO
+            page.vertical_alignment = "start"
             page.padding = 10
             
             # 2. Datos
@@ -166,34 +168,32 @@ def main(page: ft.Page):
             hoy_str = datetime.date.today().strftime("%Y-%m-%d")
             if hoy_str not in db: db[hoy_str] = {}
 
-            # Contenedor con Scroll
-            contenido = ft.Column(expand=True, scroll=ft.ScrollMode.AUTO)
+            # Área de contenido (Igual que v58, pero con 'scroll="auto"')
+            area_contenido = ft.Column(expand=True, scroll="auto")
 
-            # --- CORRECCIÓN NOTCH (Espacio superior) ---
-            contenido.controls.append(ft.Container(height=35)) 
+            # --- CORRECCIÓN NOTCH (Agregado simple) ---
+            # Un espacio vacío al principio para que no se tape el texto
+            area_contenido.controls.append(ft.Container(height=35))
 
             # --- VISTA 1: RUTINA ---
             def ver_rutina(e=None):
-                contenido.controls.clear()
-                contenido.controls.append(ft.Container(height=35)) # Espacio notch
+                # Limpiamos pero mantenemos el espacio del notch
+                area_contenido.controls.clear()
+                area_contenido.controls.append(ft.Container(height=35))
                 
-                # Header
                 completados = sum(1 for h in HABITOS_CONFIG if db.get(hoy_str, {}).get(h, False))
                 total = len(HABITOS_CONFIG)
                 porcentaje = int((completados / total) * 100) if total > 0 else 0
                 
-                contenido.controls.append(
+                # Encabezado (Estilo v58 seguro)
+                area_contenido.controls.append(
                     ft.Container(
                         content=ft.Column([
-                            ft.Text("MI IMPERIO", size=14, color="grey", weight="bold"),
-                            ft.Text(f"{porcentaje}%", size=50, weight="bold", color=COLOR_ACENTO),
-                            ft.Text("COMPLETADO", size=12, color="white", weight="bold"),
-                        ], horizontal_alignment=ft.CrossAxisAlignment.CENTER),
-                        padding=20,
-                        bgcolor=COLOR_TARJETA,
-                        border_radius=15,
-                        alignment=CENTRO,
-                        margin=ft.margin.only(bottom=15)
+                            ft.Text("MI IMPERIO", size=20, weight="bold", color="white"),
+                            ft.Text(f"{porcentaje}% COMPLETADO", size=30, weight="bold", color=COLOR_ACENTO),
+                        ], horizontal_alignment="center"),
+                        alignment=CENTRO_MATEMATICO,
+                        padding=20
                     )
                 )
 
@@ -206,109 +206,107 @@ def main(page: ft.Page):
                         guardar_db(db)
                         ver_rutina()
 
-                    # Tarjeta de Hábito
-                    contenido.controls.append(
+                    chk = ft.Checkbox(value=estado, active_color=COLOR_ACENTO, fill_color=color_code, on_change=cambiar)
+                    
+                    area_contenido.controls.append(
                         ft.Container(
                             content=ft.Row([
-                                # Cuadrado de color (Seguro)
-                                ft.Container(width=10, height=30, bgcolor=color_code, border_radius=2),
-                                ft.Text(nombre, size=15, color="white", weight="bold", expand=True),
-                                ft.Checkbox(value=estado, active_color=COLOR_ACENTO, on_change=cambiar)
+                                # Cuadrado de color simple (Indestructible)
+                                ft.Container(width=10, height=10, bgcolor=color_code),
+                                # El emoji viene pegado en el nombre, así que se verá bien
+                                ft.Text(nombre, color="white", size=14, expand=True),
+                                chk
                             ]),
-                            bgcolor=COLOR_TARJETA,
-                            padding=10,
-                            border_radius=10,
-                            margin=ft.margin.only(bottom=5)
+                            bgcolor=COLOR_TARJETA, padding=10, border_radius=5, margin=2
                         )
                     )
-                
-                contenido.controls.append(ft.Container(height=20))
                 page.update()
 
-            # --- VISTA 2: RACHA ---
+            # --- VISTA 2: CALENDARIO ---
             def ver_calendario(e=None):
-                contenido.controls.clear()
-                contenido.controls.append(ft.Container(height=35)) # Espacio notch
-                contenido.controls.append(ft.Text("HISTORIAL 7 DÍAS", size=20, weight="bold", color="white"))
+                area_contenido.controls.clear()
+                area_contenido.controls.append(ft.Container(height=35)) # Notch
+                
+                area_contenido.controls.append(ft.Text("HISTORIAL 7 DÍAS", size=20, color="white", weight="bold"))
+                area_contenido.controls.append(ft.Divider(color="white24"))
                 
                 for i in range(7):
                     fecha = datetime.date.today() - datetime.timedelta(days=i)
                     f_str = fecha.strftime("%Y-%m-%d")
                     datos = db.get(f_str, {})
                     hechos = sum(1 for h in HABITOS_CONFIG if datos.get(h, False))
-                    total = len(HABITOS_CONFIG)
-                    pct = (hechos / total) if total > 0 else 0
+                    pct = int((hechos / len(HABITOS_CONFIG)) * 100)
                     
-                    if pct >= 0.8: color = COLOR_ACENTO
-                    elif pct >= 0.4: color = "orange"
-                    else: color = "#333333"
-
-                    contenido.controls.append(
+                    color_pct = COLOR_ACENTO if pct > 80 else "grey"
+                    
+                    area_contenido.controls.append(
                         ft.Container(
                             content=ft.Row([
-                                ft.Text(f_str, color="white", size=16),
+                                ft.Text(f_str, color="white"),
                                 ft.Container(expand=True),
-                                ft.Container(
-                                    content=ft.Text(f"{int(pct*100)}%", color="black" if pct > 0.4 else "white", weight="bold", size=12),
-                                    bgcolor=color, padding=5, border_radius=5, width=50, alignment=CENTRO
-                                )
+                                ft.Text(f"{pct}%", color=color_pct, weight="bold")
                             ]),
                             bgcolor=COLOR_TARJETA, padding=15, margin=2, border_radius=5
                         )
                     )
                 page.update()
 
-            # --- VISTA 3: FRASES ---
+            # --- VISTA 3: MENTOR ---
             def ver_frases(e=None):
-                contenido.controls.clear()
-                contenido.controls.append(ft.Container(height=35)) # Espacio notch
+                area_contenido.controls.clear()
+                area_contenido.controls.append(ft.Container(height=35)) # Notch
+                
                 frase = random.choice(FRASES_MILLONARIAS)
                 
-                contenido.controls.append(
+                area_contenido.controls.append(
                     ft.Column([
                         ft.Container(height=20),
-                        ft.Text("MENTALIDAD", size=14, color="grey", weight="bold"),
-                        
+                        ft.Text("MENTALIDAD", size=20, color="white", weight="bold"),
                         ft.Container(
-                            content=ft.Text(f'"{frase}"', size=20, color="white", italic=True, text_align=ft.TextAlign.CENTER),
-                            bgcolor=COLOR_TARJETA, padding=30, border_radius=20, margin=20, alignment=CENTRO,
-                            border=ft.border.all(1, COLOR_ACENTO)
+                            content=ft.Text(frase, size=18, color="white", italic=True, text_align="center"),
+                            bgcolor=COLOR_TARJETA, padding=30, border_radius=10, margin=20, alignment=CENTRO_MATEMATICO
                         ),
-                        
-                        ft.ElevatedButton("OTRA FRASE", on_click=ver_frases, bgcolor=COLOR_ACENTO, color="black")
-                    ], horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+                        ft.ElevatedButton("NUEVA FRASE", on_click=ver_frases, bgcolor=COLOR_ACENTO, color="white")
+                    ], horizontal_alignment="center")
                 )
                 page.update()
 
-            # --- MENÚ SEGURO (Botones simples) ---
-            # Volvemos a los botones simples que sabemos que funcionan
-            menu = ft.Container(
-                content=ft.Row([
-                    ft.ElevatedButton("RUTINA", on_click=ver_rutina, bgcolor="#222222", color="white", expand=True),
-                    ft.ElevatedButton("RACHA", on_click=ver_calendario, bgcolor="#222222", color="white", expand=True),
-                    ft.ElevatedButton("MENTOR", on_click=ver_frases, bgcolor="#222222", color="white", expand=True),
-                ], spacing=5),
-                bgcolor="black", padding=5
+            # --- NAVEGACIÓN (Estilo v58 - Botones de colores) ---
+            # Esto NO falla nunca.
+            menu_botones = ft.Row(
+                [
+                    ft.ElevatedButton("RUTINA", on_click=ver_rutina, bgcolor="blue", color="white", expand=True),
+                    ft.ElevatedButton("HISTORIAL", on_click=ver_calendario, bgcolor="grey", color="white", expand=True),
+                    ft.ElevatedButton("MENTOR", on_click=ver_frases, bgcolor="orange", color="white", expand=True),
+                ],
+                alignment="spaceEvenly"
             )
 
-            page.add(ft.Column([contenido, menu], expand=True, spacing=0))
+            # --- ENSAMBLAJE FINAL ---
+            page.add(
+                ft.Column([
+                    area_contenido,
+                    ft.Container(content=menu_botones, padding=5, bgcolor="black")
+                ], expand=True)
+            )
+
             ver_rutina()
 
-        except Exception as e:
+        except Exception as error_carga:
+            # Manejo de error seguro
             page.bgcolor = "black"
             page.clean()
-            page.add(ft.Text(f"ERROR: {e}", color="red", size=20))
+            page.add(ft.Text(f"ERROR: {error_carga}", color="red", size=20))
             page.update()
 
     # --- PANTALLA INICIO ---
-    btn_start = ft.ElevatedButton("ENTRAR v61", bgcolor=COLOR_ACENTO, color="black", weight="bold", height=50, width=200, on_click=iniciar_sistema)
+    btn_start = ft.ElevatedButton("ENTRAR v62", bgcolor="black", color="white", on_click=iniciar_sistema)
+    
     page.add(
-        ft.Column([
-            ft.Text("PANEL FINAL", size=30, color="black", weight="bold"),
-            ft.Text("100% Seguro + Emojis", color="grey"),
-            ft.Container(height=40),
-            btn_start
-        ], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER, expand=True)
+        ft.Text("¡HOLA LEO!", size=30, color="black", weight="bold"),
+        ft.Text("Versión Final Segura", color="grey"),
+        ft.Container(height=20),
+        btn_start
     )
 
 ft.app(target=main)
