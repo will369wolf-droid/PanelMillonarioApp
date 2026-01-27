@@ -35,15 +35,11 @@ def main(page: ft.Page):
     page.title = "Panel Imperio"
     page.bgcolor = "white"
     page.padding = 20
-    # Usamos constantes seguras para centrar
+    # Usamos ENUMS (instrucciones internas) para evitar errores de texto
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
-    # --- CONSTANTE DE ALINEACIÓN SEGURA ---
-    # Esto arregla el error "module has no attribute center"
-    CENTRO_MATEMATICO = ft.Alignment(0, 0)
-
-    # --- BASE DE DATOS ---
+    # --- BASE DE DATOS (JSON SIMPLE) ---
     def cargar_db():
         try:
             if os.path.exists("imperio_data.json"):
@@ -59,38 +55,39 @@ def main(page: ft.Page):
     # --- SISTEMA PRINCIPAL ---
     def iniciar_sistema(e):
         try:
-            # 1. Limpieza inicial
+            # 1. Limpieza y Configuración
             page.clean()
             page.bgcolor = COLOR_FONDO
             page.vertical_alignment = ft.MainAxisAlignment.START
             page.padding = 10
             
-            # 2. Carga de Datos
+            # 2. Datos
             db = cargar_db()
             hoy_str = datetime.date.today().strftime("%Y-%m-%d")
             if hoy_str not in db: db[hoy_str] = {}
 
-            # Área de contenido cambiante
-            area_contenido = ft.Column(expand=True, scroll="auto")
+            # Contenedor dinámico
+            area_contenido = ft.Column(expand=True, scroll=ft.ScrollMode.AUTO)
 
             # --- VISTA 1: RUTINA ---
             def ver_rutina(e=None):
                 area_contenido.controls.clear()
                 
-                # Cálculo de porcentaje
+                # Porcentajes
                 completados = sum(1 for h in HABITOS_CONFIG if db.get(hoy_str, {}).get(h, False))
                 total = len(HABITOS_CONFIG)
                 porcentaje = int((completados / total) * 100) if total > 0 else 0
                 
-                # Encabezado con %
+                # Encabezado SIMPLE (Sin Stack, texto debajo del anillo)
                 area_contenido.controls.append(
                     ft.Container(
                         content=ft.Column([
                             ft.Text("MI IMPERIO", size=20, weight="bold", color="white"),
-                            ft.Text(f"{porcentaje}% COMPLETADO", size=30, weight="bold", color=COLOR_ACENTO),
+                            ft.ProgressRing(width=80, height=80, stroke_width=8, color=COLOR_ACENTO, value=completados/total if total > 0 else 0),
+                            ft.Text(f"{porcentaje}% COMPLETADO", size=20, weight="bold", color=COLOR_ACENTO),
                         ], horizontal_alignment=ft.CrossAxisAlignment.CENTER),
-                        alignment=CENTRO_MATEMATICO, # <--- AQUÍ ESTABA EL ERROR, YA CORREGIDO
-                        padding=20
+                        padding=20,
+                        alignment=ft.alignment.center # Alineación básica del contenedor padre
                     )
                 )
 
@@ -101,7 +98,7 @@ def main(page: ft.Page):
                     def cambiar(e, n=nombre):
                         db[hoy_str][n] = e.control.value
                         guardar_db(db)
-                        ver_rutina() # Recargamos para actualizar el % en vivo
+                        ver_rutina()
 
                     chk = ft.Checkbox(value=estado, active_color=COLOR_ACENTO, fill_color=color_code, on_change=cambiar)
                     
@@ -117,11 +114,10 @@ def main(page: ft.Page):
                     )
                 page.update()
 
-            # --- VISTA 2: CALENDARIO ---
+            # --- VISTA 2: HISTORIAL ---
             def ver_calendario(e=None):
                 area_contenido.controls.clear()
                 area_contenido.controls.append(ft.Text("HISTORIAL 7 DÍAS", size=20, color="white", weight="bold"))
-                area_contenido.controls.append(ft.Divider(color="white24"))
                 
                 for i in range(7):
                     fecha = datetime.date.today() - datetime.timedelta(days=i)
@@ -144,7 +140,7 @@ def main(page: ft.Page):
                     )
                 page.update()
 
-            # --- VISTA 3: FRASES (MENTOR) ---
+            # --- VISTA 3: FRASES ---
             def ver_frases(e=None):
                 area_contenido.controls.clear()
                 frase = random.choice(FRASES_MILLONARIAS)
@@ -155,28 +151,24 @@ def main(page: ft.Page):
                         ft.Text("MENTALIDAD", size=20, color="white", weight="bold"),
                         ft.Container(
                             content=ft.Text(frase, size=18, color="white", italic=True, text_align=ft.TextAlign.CENTER),
-                            bgcolor=COLOR_TARJETA, 
-                            padding=30, 
-                            border_radius=10, 
-                            margin=20,
-                            alignment=CENTRO_MATEMATICO # <--- CORREGIDO TAMBIÉN AQUÍ
+                            bgcolor=COLOR_TARJETA, padding=30, border_radius=10, margin=20
                         ),
                         ft.ElevatedButton("NUEVA FRASE", on_click=ver_frases, bgcolor=COLOR_ACENTO, color="white")
                     ], horizontal_alignment=ft.CrossAxisAlignment.CENTER)
                 )
                 page.update()
 
-            # --- NAVEGACIÓN INFERIOR (Botones Seguros) ---
+            # --- NAVEGACIÓN (Corregida con MainAxisAlignment) ---
             menu_botones = ft.Row(
                 [
                     ft.ElevatedButton("RUTINA", on_click=ver_rutina, bgcolor="blue", color="white", expand=True),
                     ft.ElevatedButton("HISTORIAL", on_click=ver_calendario, bgcolor="grey", color="white", expand=True),
                     ft.ElevatedButton("MENTOR", on_click=ver_frases, bgcolor="orange", color="white", expand=True),
                 ],
-                alignment=ft.MainAxisAlignment.SPACE_EVENLY
+                alignment=ft.MainAxisAlignment.SPACE_EVENLY # <--- ESTO ES LO SEGURO
             )
 
-            # --- ENSAMBLAJE FINAL ---
+            # --- ENSAMBLAJE ---
             page.add(
                 ft.Column([
                     area_contenido,
@@ -184,22 +176,21 @@ def main(page: ft.Page):
                 ], expand=True)
             )
 
-            # Cargar rutina por defecto
             ver_rutina()
 
         except Exception as error_carga:
-            # SI FALLA, MUESTRA ESTO EN ROJO PARA SABER QUÉ FUE
+            # PANTALLA ROJA DE ERROR (Mejor que pantalla negra)
             page.bgcolor = "black"
             page.clean()
-            page.add(ft.Text(f"ERROR: {error_carga}", color="red", size=20))
+            page.add(ft.Text(f"ERROR v59: {error_carga}", color="red", size=20))
             page.update()
 
-    # --- PANTALLA DE INICIO ---
-    btn_start = ft.ElevatedButton("ENTRAR AL IMPERIO", bgcolor="black", color="white", on_click=iniciar_sistema)
+    # --- PANTALLA INICIAL ---
+    btn_start = ft.ElevatedButton("ENTRAR v59", bgcolor="black", color="white", on_click=iniciar_sistema)
     
     page.add(
         ft.Text("¡HOLA LEO!", size=30, color="black", weight="bold"),
-        ft.Text("Sistema Corregido (v58)", color="grey"),
+        ft.Text("Modo Seguro Activado", color="grey"),
         ft.Container(height=20),
         btn_start
     )
