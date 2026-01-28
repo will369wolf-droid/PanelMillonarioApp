@@ -1,62 +1,42 @@
 import flet as ft
 import datetime
-import random
 import json
 import os
 
-# --- CONFIGURACIÓN (Estilo v58 Original) ---
+# --- COLORES ---
 COLOR_FONDO = "#121212"
 COLOR_TARJETA = "#1E1E1E"
-COLOR_ACENTO = "#00d26a"
+COLOR_ACENTO = "#00d26a" # Verde Éxito
 
-# --- DATOS COMPLETOS (Arsenal) ---
-FRASES_MILLONARIAS = [
-    "Gana la mañana, gana el día.",
-    "La disciplina es libertad.",
-    "Hazlo con miedo, pero hazlo.",
-    "Tu futuro se crea hoy.",
-    "El dinero no duerme.",
-    "No busques motivación, busca disciplina.",
-    "El éxito es la suma de pequeños esfuerzos.",
-    "Invierte en ti, es la única inversión segura.",
-    "Tu competencia está entrenando ahora.",
-    "Sé el CEO de tu vida.",
-    "El dolor es temporal, la gloria es eterna.",
-    "Cierra la boca y trabaja.",
-    "Si fuera fácil, todo el mundo lo haría.",
-    "La comodidad es el enemigo del progreso.",
-    "No te detengas cuando estés cansado, detente cuando termines."
+# --- TUS 20 HÁBITOS ---
+HABITOS = [
+    "⏰ Despertar 5:00 AM", "🛏️ Tender la cama", "💧 Tomar agua", 
+    "🚿 Ducha fría", "🧘 Meditación/Orar", "📝 Planificar el día", 
+    "🥗 Desayuno nutritivo", "📚 Leer 20 min", "🏃 Ejercicio Pesas", 
+    "🎯 Objetivo Principal", "🔍 Investigar Productos", "📢 Revisar Ads", 
+    "🧠 Aprender IA", "⚡ Trabajo Profundo", "🤝 Networking", 
+    "📊 Revisar Finanzas", "📱 Crear Contenido", "🚫 Cero Azúcar", 
+    "💡 Reflexión", "😴 Dormir Temprano"
 ]
 
-HABITOS_CONFIG = {
-    "⏰ Despertar 5:00 AM": "orange",
-    "🛏️ Tender la cama": "grey",
-    "💧 Tomar agua": "blue",
-    "🚿 Ducha fría": "cyan",
-    "🧘 Meditación": "purple",
-    "📝 Planificar día": "yellow",
-    "🥗 Desayuno sano": "green",
-    "📚 Leer 20 min": "amber",
-    "🏋️ Ejercicio": "red",
-    "🎯 Objetivo Principal": "red",
-    "💻 Trabajo Profundo": "yellow",
-    "📢 Ads / Marketing": "pink",
-    "🤝 Networking": "blue",
-    "💰 Revisar Finanzas": "green",
-    "😴 Dormir Temprano": "indigo",
-}
+FRASES = [
+    "El dolor es temporal, la gloria es eterna.",
+    "No busques motivación, busca disciplina.",
+    "Hazlo con miedo, pero hazlo.",
+    "Tu futuro se crea hoy.",
+    "El dinero no duerme."
+]
 
 def main(page: ft.Page):
-    # --- ARRANQUE SEGURO (Idéntico a v58) ---
-    page.title = "Imperio v69"
+    # --- CONFIGURACIÓN SEGURA (Base v58) ---
+    page.title = "Imperio v70"
     page.bgcolor = "white"
-    page.padding = 20
-    # Alineación segura v58
-    page.vertical_alignment = "center"
-    page.horizontal_alignment = "center"
-
-    # Constante v58
-    CENTRO_MATEMATICO = ft.Alignment(0, 0)
+    page.padding = 10
+    page.vertical_alignment = "start"
+    
+    # Variable para saber qué día estamos viendo (Hoy por defecto)
+    # Usamos una lista para poder modificarla dentro de las funciones
+    estado_app = {"fecha_ver": datetime.date.today()}
 
     # --- BASE DE DATOS ---
     def cargar_db():
@@ -71,159 +51,129 @@ def main(page: ft.Page):
             with open("imperio_data.json", "w") as f: json.dump(db, f)
         except: pass
 
-    # --- SISTEMA PRINCIPAL ---
+    # --- SISTEMA ---
     def iniciar_sistema(e):
-        try:
-            # 1. Limpieza y Configuración
-            page.clean()
-            page.bgcolor = COLOR_FONDO
-            page.vertical_alignment = "start"
-            page.padding = 10
+        page.clean()
+        page.bgcolor = COLOR_FONDO
+        
+        db = cargar_db()
+        contenido = ft.Column(expand=True, scroll="auto")
+        
+        # Agregamos espacio para el Notch
+        contenido.controls.append(ft.Container(height=35))
+
+        # --- FUNCIÓN: CAMBIAR DÍA ---
+        def cambiar_dia(e, fecha_seleccionada):
+            estado_app["fecha_ver"] = fecha_seleccionada
+            renderizar_interfaz() # Recargamos toda la pantalla
+
+        # --- RENDERIZADOR PRINCIPAL ---
+        def renderizar_interfaz():
+            # Limpiamos el contenido (excepto el notch)
+            del contenido.controls[1:] 
             
-            # 2. Carga de Datos
-            db = cargar_db()
-            hoy_str = datetime.date.today().strftime("%Y-%m-%d")
-            if hoy_str not in db: db[hoy_str] = {}
+            fecha_actual = estado_app["fecha_ver"]
+            fecha_str = fecha_actual.strftime("%Y-%m-%d")
+            hoy = datetime.date.today()
+            
+            if fecha_str not in db: db[fecha_str] = {}
 
-            # Área de contenido (Igual que v58)
-            area_contenido = ft.Column(expand=True, scroll="auto")
-
-            # --- NOTCH FIX (Único agregado seguro) ---
-            area_contenido.controls.append(ft.Container(height=35))
-
-            # --- VISTA 1: RUTINA ---
-            def ver_rutina(e=None):
-                area_contenido.controls.clear()
-                area_contenido.controls.append(ft.Container(height=35)) # Notch
+            # 1. BARRA DE CALENDARIO (Horizontal)
+            # Mostramos los últimos 5 días + Hoy + Mañana (opcional)
+            fila_dias = ft.Row(scroll="auto", spacing=10)
+            
+            for i in range(5, -1, -1):
+                f = hoy - datetime.timedelta(days=i)
+                es_seleccionado = (f == fecha_actual)
                 
-                # Cálculo (Lógica v58)
-                completados = sum(1 for h in HABITOS_CONFIG if db.get(hoy_str, {}).get(h, False))
-                total = len(HABITOS_CONFIG)
-                porcentaje = int((completados / total) * 100) if total > 0 else 0
+                # Datos para el color del día
+                f_s = f.strftime("%Y-%m-%d")
+                d_data = db.get(f_s, {})
+                hechos = sum(1 for h in HABITOS if d_data.get(h, False))
+                total = len(HABITOS)
+                ratio = hechos / total if total > 0 else 0
                 
-                # Encabezado (Diseño v58)
-                area_contenido.controls.append(
-                    ft.Container(
-                        content=ft.Column([
-                            ft.Text("MI IMPERIO", size=20, weight="bold", color="white"),
-                            ft.Text(f"{porcentaje}% COMPLETADO", size=30, weight="bold", color=COLOR_ACENTO),
-                        ], horizontal_alignment="center"),
-                        alignment=CENTRO_MATEMATICO,
-                        padding=20
-                    )
+                color_dia = COLOR_ACENTO if ratio > 0.8 else "#333333"
+                if es_seleccionado: color_dia = "white" # Resaltar selección
+                
+                # Botón de Día
+                btn_dia = ft.Container(
+                    content=ft.Column([
+                        ft.Text(f.strftime("%a")[:2], size=10, color="black" if es_seleccionado else "grey"),
+                        ft.Text(str(f.day), size=14, weight="bold", color="black" if es_seleccionado else "white")
+                    ], alignment="center", spacing=2),
+                    width=45, height=55,
+                    bgcolor=color_dia,
+                    border_radius=10,
+                    on_click=lambda e, f=f: cambiar_dia(e, f) # Magia para cambiar fecha
                 )
+                fila_dias.controls.append(btn_dia)
 
-                # Lista (Diseño v58 - Indestructible)
-                for nombre, color_code in HABITOS_CONFIG.items():
-                    estado = db.get(hoy_str, {}).get(nombre, False)
-                    
-                    def cambiar(e, n=nombre):
-                        db[hoy_str][n] = e.control.value
-                        guardar_db(db)
-                        ver_rutina()
-
-                    chk = ft.Checkbox(value=estado, active_color=COLOR_ACENTO, fill_color=color_code, on_change=cambiar)
-                    
-                    area_contenido.controls.append(
-                        ft.Container(
-                            content=ft.Row([
-                                ft.Container(width=10, height=10, bgcolor=color_code),
-                                ft.Text(nombre, color="white", size=14, expand=True),
-                                chk
-                            ]),
-                            bgcolor=COLOR_TARJETA, padding=10, border_radius=5, margin=2
-                        )
-                    )
-                page.update()
-
-            # --- VISTA 2: CALENDARIO (Historial) ---
-            def ver_calendario(e=None):
-                area_contenido.controls.clear()
-                area_contenido.controls.append(ft.Container(height=35)) # Notch
-                
-                area_contenido.controls.append(ft.Text("HISTORIAL 7 DÍAS", size=20, color="white", weight="bold"))
-                area_contenido.controls.append(ft.Divider(color="white24"))
-                
-                for i in range(7):
-                    fecha = datetime.date.today() - datetime.timedelta(days=i)
-                    f_str = fecha.strftime("%Y-%m-%d")
-                    datos = db.get(f_str, {})
-                    hechos = sum(1 for h in HABITOS_CONFIG if datos.get(h, False))
-                    pct = int((hechos / len(HABITOS_CONFIG)) * 100)
-                    
-                    color_pct = COLOR_ACENTO if pct > 80 else "grey"
-                    
-                    # Tarjeta simple de historial (v58 style)
-                    area_contenido.controls.append(
-                        ft.Container(
-                            content=ft.Row([
-                                ft.Text(f_str, color="white"),
-                                ft.Container(expand=True),
-                                ft.Text(f"{pct}%", color=color_pct, weight="bold")
-                            ]),
-                            bgcolor=COLOR_TARJETA, padding=15, margin=2, border_radius=5
-                        )
-                    )
-                page.update()
-
-            # --- VISTA 3: MENTOR (Frases) ---
-            def ver_frases(e=None):
-                area_contenido.controls.clear()
-                area_contenido.controls.append(ft.Container(height=35)) # Notch
-                
-                frase = random.choice(FRASES_MILLONARIAS)
-                
-                area_contenido.controls.append(
-                    ft.Column([
-                        ft.Container(height=50),
-                        ft.Text("MENTALIDAD", size=20, color="white", weight="bold"),
-                        ft.Container(
-                            content=ft.Text(frase, size=18, color="white", italic=True, text_align="center"),
-                            bgcolor=COLOR_TARJETA, 
-                            padding=30, 
-                            border_radius=10, 
-                            margin=20,
-                            alignment=CENTRO_MATEMATICO
-                        ),
-                        ft.ElevatedButton("NUEVA FRASE", on_click=ver_frases, bgcolor=COLOR_ACENTO, color="white")
-                    ], horizontal_alignment="center")
-                )
-                page.update()
-
-            # --- NAVEGACIÓN (Botones v58) ---
-            menu_botones = ft.Row(
-                [
-                    ft.ElevatedButton("RUTINA", on_click=ver_rutina, bgcolor="blue", color="white", expand=True),
-                    ft.ElevatedButton("HISTORIAL", on_click=ver_calendario, bgcolor="grey", color="white", expand=True),
-                    ft.ElevatedButton("MENTOR", on_click=ver_frases, bgcolor="orange", color="white", expand=True),
-                ],
-                alignment="spaceEvenly"
+            contenido.controls.append(
+                ft.Container(content=fila_dias, padding=10, height=80)
             )
 
-            # --- ENSAMBLAJE FINAL ---
-            page.add(
-                ft.Column([
-                    area_contenido,
-                    ft.Container(content=menu_botones, padding=5, bgcolor="black")
-                ], expand=True)
+            # 2. ENCABEZADO DEL DÍA
+            # Calculamos progreso del día seleccionado
+            completados = sum(1 for h in HABITOS if db.get(fecha_str, {}).get(h, False))
+            porcentaje = int((completados / len(HABITOS)) * 100)
+            
+            titulo_dia = "HOY" if fecha_actual == hoy else fecha_str
+            
+            contenido.controls.append(
+                ft.Container(
+                    content=ft.Column([
+                        ft.Text(f"RUTINA: {titulo_dia}", size=14, color="grey", weight="bold"),
+                        ft.Row([
+                            ft.Text(f"{porcentaje}%", size=40, weight="bold", color=COLOR_ACENTO),
+                            ft.Icon(name="bolt", color=COLOR_ACENTO)
+                        ], alignment="center")
+                    ], horizontal_alignment="center"),
+                    padding=10,
+                    alignment=ft.alignment.center
+                )
             )
 
-            ver_rutina()
+            # 3. LISTA DE HÁBITOS (CON SWITCHES)
+            for habit in HABITOS:
+                estado = db.get(fecha_str, {}).get(habit, False)
+                
+                def switch_changed(e, h=habit):
+                    db[fecha_str][h] = e.control.value
+                    guardar_db(db)
+                    # Actualizamos solo el texto de porcentaje para no recargar todo (más rápido)
+                    # O recargamos todo para seguridad:
+                    renderizar_interfaz()
 
-        except Exception as error_carga:
-            page.bgcolor = "black"
-            page.clean()
-            page.add(ft.Text(f"ERROR: {error_carga}", color="red", size=20))
+                # Switch Moderno
+                switch = ft.Switch(
+                    value=estado,
+                    active_color=COLOR_ACENTO,
+                    active_track_color="white",
+                    on_change=switch_changed
+                )
+                
+                # Tarjeta
+                tarjeta = ft.Container(
+                    content=ft.Row([
+                        ft.Text(habit, color="white", size=15, expand=True),
+                        switch
+                    ], alignment="spaceBetween"),
+                    bgcolor=COLOR_TARJETA,
+                    padding=10,
+                    border_radius=10,
+                    margin=ft.margin.only(left=10, right=10, bottom=5)
+                )
+                contenido.controls.append(tarjeta)
+            
             page.update()
 
+        # Inicio
+        renderizar_interfaz()
+        page.add(contenido)
+
     # --- PANTALLA INICIO ---
-    btn_start = ft.ElevatedButton("ENTRAR AL IMPERIO", bgcolor="black", color="white", on_click=iniciar_sistema)
-    
-    page.add(
-        ft.Text("¡HOLA LEO!", size=30, color="black", weight="bold"),
-        ft.Text("Versión v69 (Base v58)", color="grey"),
-        ft.Container(height=20),
-        btn_start
-    )
+    btn_start = ft.ElevatedButton("ENTRAR v70", bgcolor=COLOR_ACENTO, color="black", on_click=iniciar_sistema)
+    page.add(ft.Text("IMPERIO", size=30, color="black"), btn_start)
 
 ft.app(target=main)
